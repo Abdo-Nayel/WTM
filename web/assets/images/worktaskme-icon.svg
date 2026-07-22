@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="WorkTaskMe">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4338CA"/>
+      <stop offset="50%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#3730A3"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="18%" y1="20%" x2="88%" y2="82%">
+      <stop offset="0%" stop-color="#EEF2FF"/>
+      <stop offset="45%" stop-color="#C7D2FE"/>
+      <stop offset="72%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <clipPath id="plate">
+      <rect width="512" height="512" rx="112"/>
+    </clipPath>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <g clip-path="url(#plate)" opacity=".4" fill="#A5B4FC">
+    <circle cx="96" cy="108" r="3"/>
+    <circle cx="168" cy="84" r="2.5"/>
+    <circle cx="220" cy="140" r="2"/>
+    <circle cx="400" cy="96" r="3"/>
+    <circle cx="448" cy="160" r="2.5"/>
+    <circle cx="72" cy="380" r="2.5"/>
+    <circle cx="140" cy="430" r="3"/>
+    <circle cx="460" cy="300" r="2"/>
+    <g stroke="#A5B4FC" stroke-width="2" fill="none" opacity=".9">
+      <path d="M96 108L168 84L220 140"/>
+      <path d="M400 96L448 160"/>
+      <path d="M72 380L140 430"/>
+    </g>
+  </g>
+
+  <!-- Geometric W merging into upward arrow -->
+  <path fill="url(#mark)" d="
+    M112 378
+    L148 168
+    C152 148 168 136 188 136
+    H214
+    C234 136 248 150 252 170
+    L286 318
+    L320 170
+    C324 150 338 136 358 136
+    H378
+    C394 136 406 146 412 162
+    L436 236
+    L460 178
+    C468 160 490 156 504 172
+    C518 188 514 212 498 224
+    L422 292
+    C406 306 384 308 366 296
+    L348 284
+    L330 340
+    C322 368 296 388 266 388
+    H242
+    C214 388 190 370 182 344
+    L154 236
+    L140 378
+    C138 396 124 408 106 408
+    C88 408 76 396 76 378
+    Z
+  "/>
+
+  <!-- Soft person cue on left stem -->
+  <circle cx="132" cy="322" r="17" fill="#4F46E5"/>
+  <circle cx="132" cy="322" r="9" fill="#C7D2FE" opacity=".35"/>
+
+  <!-- Emerald completion check integrated with arrow tip -->
+  <path
+    d="M278 292 L318 332 L408 228"
+    fill="none"
+    stroke="#059669"
+    stroke-width="30"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity=".45"
+  />
+  <path
+    d="M278 292 L318 332 L408 228"
+    fill="none"
+    stroke="#10B981"
+    stroke-width="22"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M278 292 L318 332 L408 228"
+    fill="none"
+    stroke="#ECFDF5"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

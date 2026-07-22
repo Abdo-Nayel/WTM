@@ -1,0 +1,64 @@
+version: "3.9"
+
+# Local stack that behaves like a deployed server:
+#   docker compose up --build
+# App: http://localhost:8000
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: worktaskme
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - wtm_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 8
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py seed_demo &&
+             daphne -b 0.0.0.0 -p 8000 config.asgi:application"
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: local-docker-secret-change-me
+      ALLOWED_HOSTS: "*"
+      USE_SQLITE: "False"
+      USE_INMEMORY_CHANNELS: "False"
+      DB_NAME: worktaskme
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+      CORS_ALLOW_ALL_ORIGINS: "True"
+      FRONTEND_URL: http://localhost:8000
+      EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+    volumes:
+      - ./backend:/app
+      - ./web:/web:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+volumes:
+  wtm_pgdata:

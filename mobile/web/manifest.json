@@ -1,0 +1,12 @@
+{
+  "name": "WorkTaskMe",
+  "short_name": "WorkTaskMe",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0F766E",
+  "theme_color": "#0F766E",
+  "description": "WorkTaskMe — Agile tasks + team calendar",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": []
+}
