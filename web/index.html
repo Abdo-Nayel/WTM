@@ -1378,7 +1378,8 @@
 <script>
 const COLOR_PRESETS = ["#0c66e4", "#579dff", "#4bce97", "#f5cd47", "#f87168", "#9f8fef", "#8590a2"];
 
-const API = localStorage.getItem("wtm_api") || "http://127.0.0.1:8000";
+// Same-origin by default (works on VPS behind Nginx). Override: localStorage.wtm_api
+const API = localStorage.getItem("wtm_api") || (typeof location !== "undefined" ? location.origin : "http://127.0.0.1:8000");
 
 const I18N = {
   en: {
