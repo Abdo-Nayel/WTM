@@ -146,12 +146,20 @@ def send_otp_email(email: str, code: str, purpose: str = "register") -> None:
         f"If you did not request this, you can ignore this email.\n\n"
         f"— WorkTaskMe\n"
     )
-    send_mail(
-        subject=subject,
-        message=body,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[email],
-        fail_silently=False,
-    )
-    if settings.DEBUG:
-        print(f"\n[WorkTaskMe OTP] email={email} code={code} purpose={purpose}\n")
+    # Always print to container logs so VPS operators can recover the code
+    print(f"\n[WorkTaskMe OTP] email={email} code={code} purpose={purpose}\n", flush=True)
+    try:
+        send_mail(
+            subject=subject,
+            message=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except Exception as exc:  # noqa: BLE001 — surface SMTP misconfig without 500
+        print(f"[WorkTaskMe OTP] email send failed: {exc}", flush=True)
+        # Keep registration/login flow usable; operator can read code from logs
+        if settings.DEBUG:
+            raise
+        # In production: do not crash the request; email is best-effort
+        return
