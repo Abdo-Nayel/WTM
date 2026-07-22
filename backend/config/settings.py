@@ -97,6 +97,31 @@ DATABASES = {
     }
 }
 
+# Railway / Render / Heroku inject DATABASE_URL
+_database_url = os.getenv("DATABASE_URL", "").strip()
+if _database_url:
+    # Prefer dj_database_url if installed; otherwise parse with urllib
+    try:
+        import dj_database_url
+
+        DATABASES["default"] = dj_database_url.parse(
+            _database_url, conn_max_age=60, ssl_require=True
+        )
+    except ImportError:
+        from urllib.parse import urlparse, unquote
+
+        u = urlparse(_database_url)
+        DATABASES["default"] = {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": (u.path or "/").lstrip("/") or "worktaskme",
+            "USER": unquote(u.username or ""),
+            "PASSWORD": unquote(u.password or ""),
+            "HOST": u.hostname or "",
+            "PORT": str(u.port or 5432),
+            "CONN_MAX_AGE": 60,
+            "OPTIONS": {"sslmode": "require"} if u.scheme.startswith("postgres") else {},
+        }
+
 # SQLite fallback for local bootstrapping without Postgres
 if os.getenv("USE_SQLITE", "False").lower() in ("1", "true", "yes"):
     DATABASES = {
@@ -122,7 +147,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# Manifest storage can break deploys if a hashed file is missing; compressed is enough.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -148,8 +174,22 @@ CORS_ALLOWED_ORIGINS = [
     if o.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
-if DEBUG:
+if DEBUG or os.getenv("CORS_ALLOW_ALL_ORIGINS", "False").lower() in ("1", "true", "yes"):
     CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if o.strip()
+]
+# Auto-trust FRONTEND_URL origin when HTTPS
+_frontend = os.getenv("FRONTEND_URL", "").strip()
+if _frontend.startswith("https://") and _frontend not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(_frontend.rstrip("/"))
+_railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+if _railway_domain:
+    _origin = f"https://{_railway_domain}"
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_origin)
 CORS_ALLOW_HEADERS = [
     "accept",
     "authorization",
@@ -213,7 +253,12 @@ CHANNEL_LAYERS = {
         "CONFIG": {"hosts": [REDIS_URL]},
     }
 }
-if DEBUG and os.getenv("USE_INMEMORY_CHANNELS", "True").lower() in ("1", "true", "yes"):
+_use_memory = os.getenv("USE_INMEMORY_CHANNELS", "True" if DEBUG else "False").lower() in (
+    "1",
+    "true",
+    "yes",
+)
+if _use_memory:
     CHANNEL_LAYERS = {
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}
     }

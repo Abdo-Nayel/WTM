@@ -1,0 +1,53 @@
+# Production stack for Namecheap VPS / any Linux server
+# Usage:
+#   cp .env.prod.example .env.prod   # edit secrets + domain/IP
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-worktaskme}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env.prod}
+    volumes:
+      - wtm_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    environment:
+      DEBUG: ${DEBUG:-False}
+      USE_SQLITE: "False"
+      USE_INMEMORY_CHANNELS: ${USE_INMEMORY_CHANNELS:-False}
+      DB_HOST: db
+      DB_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+      SEED_DEMO: ${SEED_DEMO:-True}
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - wtm_media:/app/media
+
+volumes:
+  wtm_pgdata:
+  wtm_media:
