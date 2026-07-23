@@ -84,12 +84,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final result = await _service.login(email: email, password: password);
-      await _storage.saveTokens(access: result.access, refresh: result.refresh);
-      state = AuthState(
-        status: AuthStatus.authenticated,
-        user: result.user,
-        isLoading: false,
-      );
+      await applyAuthResult(result);
       return true;
     } catch (e) {
       state = state.copyWith(
@@ -99,6 +94,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       return false;
     }
+  }
+
+  Future<void> applyAuthResult(AuthResult result) async {
+    await _storage.saveTokens(access: result.access, refresh: result.refresh);
+    state = AuthState(
+      status: AuthStatus.authenticated,
+      user: result.user,
+      isLoading: false,
+    );
   }
 
   Future<bool> register({

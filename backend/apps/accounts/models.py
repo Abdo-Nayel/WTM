@@ -92,6 +92,7 @@ class EmailOTP(models.Model):
     class Purpose(models.TextChoices):
         REGISTER = "register", "Register"
         LOGIN = "login", "Login"
+        RESET = "reset", "Password reset"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(db_index=True)
@@ -140,6 +141,8 @@ def send_otp_email(email: str, code: str, purpose: str = "register") -> None:
     subject = "WorkTaskMe verification code"
     if purpose == EmailOTP.Purpose.LOGIN:
         subject = "WorkTaskMe login code"
+    elif purpose == EmailOTP.Purpose.RESET:
+        subject = "WorkTaskMe password reset code"
     body = (
         f"Your WorkTaskMe verification code is: {code}\n\n"
         f"It expires in 10 minutes.\n\n"

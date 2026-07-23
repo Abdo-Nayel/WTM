@@ -30,13 +30,13 @@ SLIDES = [
     },
     {
         "eyebrow": "Agile Boards",
-        "title": "Jira-style Kanban\n& Sprint Tracking",
+        "title": "Agile Kanban\n& Sprint Tracking",
         "sub": "Move issues, set priority, ship faster",
         "accent": (99, 102, 241),
     },
     {
         "eyebrow": "Team Calendar",
-        "title": "TeamUp-style\nVisual Scheduling",
+        "title": "Shared Team\nVisual Scheduling",
         "sub": "Color-coded deadlines & resource sync",
         "accent": (16, 185, 129),
     },

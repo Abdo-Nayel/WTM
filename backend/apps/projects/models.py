@@ -5,7 +5,7 @@ from apps.core.models import TenantModel
 
 
 class Project(TenantModel):
-    """Jira-style project inside a workspace."""
+    """Project inside a workspace."""
 
     name = models.CharField(max_length=200)
     key = models.CharField(max_length=10)  # e.g. WTM — used for WTM-101

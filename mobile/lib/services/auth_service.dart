@@ -59,7 +59,7 @@ class AuthService {
     return User.fromJson(res.data as Map<String, dynamic>);
   }
 
-  /// Request a password-reset email (always succeeds from the client POV).
+  /// Request a password-reset OTP (fails clearly if email is not registered).
   Future<void> requestPasswordReset({required String email}) async {
     await _dio.post(
       ApiConfig.authPasswordReset,
@@ -67,19 +67,22 @@ class AuthService {
     );
   }
 
-  Future<void> confirmPasswordReset({
-    required String token,
+  Future<AuthResult> confirmPasswordReset({
+    required String email,
+    required String code,
     required String newPassword,
     required String newPasswordConfirm,
   }) async {
-    await _dio.post(
+    final res = await _dio.post(
       ApiConfig.authPasswordResetConfirm,
       data: {
-        'token': token,
+        'email': email.trim().toLowerCase(),
+        'code': code.trim(),
         'new_password': newPassword,
         'new_password_confirm': newPasswordConfirm,
       },
     );
+    return _parseAuth(res.data as Map<String, dynamic>);
   }
 
   AuthResult _parseAuth(Map<String, dynamic> data) {

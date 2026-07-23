@@ -1,6 +1,6 @@
 # WorkTaskMe — Django Backend
 
-Jira-style task management + TeamUp-style calendar in a **single PostgreSQL database** with workspace-level isolation (`workspace_id` + membership RBAC).
+Agile task management + shared team calendar in a **single PostgreSQL database** with workspace-level isolation (`workspace_id` + membership RBAC).
 
 ## Stack
 
@@ -135,7 +135,7 @@ backend/
     workspaces/     # Workspace, membership, invites, RBAC roles
     projects/       # Project, Epic, Label, BoardColumn
     tasks/          # Task, comments, activity, calendar sync signals
-    calendar_events/# TeamUp-style events + timeline
+    calendar_events/# Shared calendar events + timeline
 ```
 
 ## Roles
@@ -149,4 +149,4 @@ backend/
 
 ## Next step
 
-Flutter client (Step 2): JWT client + `X-Workspace-Id` header, Kanban board, TeamUp calendar.
+Flutter client (Step 2): JWT client + `X-Workspace-Id` header, Kanban board, team calendar.

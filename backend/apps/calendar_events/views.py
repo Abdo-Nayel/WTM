@@ -24,7 +24,7 @@ class CalendarEventFilter(filters.FilterSet):
 
 class CalendarEventViewSet(TenantViewSetMixin, viewsets.ModelViewSet):
     """
-    TeamUp-style calendar API.
+    Shared team calendar API.
 
     Query range: ?start=2026-07-01&end=2026-07-31
     Resource timeline: ?assignee=<uuid>
@@ -57,7 +57,7 @@ class CalendarEventViewSet(TenantViewSetMixin, viewsets.ModelViewSet):
     @action(detail=False, methods=["get"])
     def timeline(self, request):
         """
-        Resource timeline: events grouped by assignee for TeamUp-style view.
+        Resource timeline: events grouped by assignee for resource timeline view.
         """
         qs = self.filter_queryset(self.get_queryset())
         grouped = {}

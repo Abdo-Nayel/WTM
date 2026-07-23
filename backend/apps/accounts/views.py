@@ -265,11 +265,13 @@ class PasswordResetRequestView(APIView):
         ser.is_valid(raise_exception=True)
         result = ser.save()
         payload = {
-            "detail": "If an account exists for that email, we sent a reset link.",
+            "detail": "We sent a 6-digit code to your email.",
             "email": result.get("email"),
+            "exists": True,
+            "next": "otp",
         }
-        if settings.DEBUG and result.get("reset_debug"):
-            payload["reset_debug"] = result["reset_debug"]
+        if settings.DEBUG and result.get("otp_debug"):
+            payload["otp_debug"] = result["otp_debug"]
         return Response(payload, status=status.HTTP_200_OK)
 
 

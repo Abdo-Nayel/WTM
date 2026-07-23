@@ -238,7 +238,7 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "WorkTaskMe API",
-    "DESCRIPTION": "Jira-style task management + TeamUp-style calendar — multi-tenant API",
+    "DESCRIPTION": "Agile task management + shared team calendar — multi-tenant API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }

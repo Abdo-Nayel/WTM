@@ -112,7 +112,7 @@ class Command(BaseCommand):
                     "due": today,
                 },
                 {
-                    "title": "TeamUp calendar sync",
+                    "title": "Team calendar sync",
                     "priority": TaskPriority.MEDIUM,
                     "points": 8,
                     "column": columns.get(BoardColumn.ColumnCategory.IN_PROGRESS),

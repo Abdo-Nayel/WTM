@@ -241,6 +241,8 @@ class ResendOTPSerializer(serializers.Serializer):
             raise serializers.ValidationError({"email": "Account not found."})
         if purpose == EmailOTP.Purpose.REGISTER and user.email_verified:
             raise serializers.ValidationError({"email": "Email is already verified. Sign in."})
+        if purpose == EmailOTP.Purpose.RESET and not user.is_active:
+            raise serializers.ValidationError({"email": "Account is disabled."})
         otp_row, code = EmailOTP.issue(email, purpose=purpose, ttl_minutes=10)
         send_otp_email(email, code, purpose=purpose)
         return {"email": email, "code": code, "otp_id": otp_row.id}
@@ -339,32 +341,51 @@ class FCMTokenSerializer(serializers.Serializer):
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):
+    """Send a 6-digit OTP for forgot-password. Requires a registered active email."""
+
     email = serializers.EmailField()
 
     def validate_email(self, value):
         return value.strip().lower()
 
-    def save(self, **kwargs):
-        from apps.accounts.models import PasswordResetToken, send_password_reset_email
-
-        email = self.validated_data["email"]
+    def validate(self, attrs):
+        email = attrs["email"]
         user = User.objects.filter(email=email).first()
-        # Always succeed (do not reveal whether the email exists)
-        if user and user.is_active:
-            _row, raw = PasswordResetToken.issue(user, ttl_hours=1)
-            try:
-                send_password_reset_email(email, raw)
-            except Exception:
-                pass
-            if settings.DEBUG:
-                return {"email": email, "reset_debug": raw}
-        return {"email": email}
+        if not user:
+            raise serializers.ValidationError(
+                {"email": "No account found for this email. Create an account first."}
+            )
+        if not user.is_active:
+            raise serializers.ValidationError({"email": "This account is disabled."})
+        attrs["_user"] = user
+        return attrs
+
+    def save(self, **kwargs):
+        email = self.validated_data["email"]
+        otp_row, code = EmailOTP.issue(
+            email, purpose=EmailOTP.Purpose.RESET, ttl_minutes=10
+        )
+        try:
+            send_otp_email(email, code, purpose=EmailOTP.Purpose.RESET)
+        except Exception:
+            pass
+        result = {"email": email, "exists": True, "next": "otp"}
+        if settings.DEBUG:
+            result["otp_debug"] = code
+            result["otp_id"] = otp_row.id
+        return result
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
-    token = serializers.CharField()
+    """Verify reset OTP, set a new password, and return JWT (auto sign-in)."""
+
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=8)
     new_password = serializers.CharField(write_only=True, min_length=8)
     new_password_confirm = serializers.CharField(write_only=True, min_length=8)
+
+    def validate_email(self, value):
+        return value.strip().lower()
 
     def validate_new_password(self, value):
         validate_password(value)
@@ -375,33 +396,57 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"new_password_confirm": "Passwords do not match."}
             )
-        from apps.accounts.models import PasswordResetToken
-
-        raw = attrs["token"].strip()
-        token = (
-            PasswordResetToken.objects.filter(
-                token_hash=PasswordResetToken.hash_token(raw),
+        email = attrs["email"]
+        code = attrs["code"]
+        otp = (
+            EmailOTP.objects.filter(
+                email=email,
+                purpose=EmailOTP.Purpose.RESET,
                 consumed_at__isnull=True,
             )
-            .select_related("user")
+            .order_by("-created_at")
             .first()
         )
-        if not token or not token.matches(raw):
-            raise serializers.ValidationError({"token": "Invalid or expired reset link."})
-        if token.is_expired:
-            raise serializers.ValidationError({"token": "This reset link has expired."})
-        attrs["_token_row"] = token
+        if not otp:
+            raise serializers.ValidationError(
+                {"code": "No active code. Request a new one."}
+            )
+        if otp.is_expired:
+            raise serializers.ValidationError(
+                {"code": "Code expired. Request a new one."}
+            )
+        otp.attempts += 1
+        otp.save(update_fields=["attempts"])
+        if otp.attempts > 8:
+            otp.consumed_at = otp.consumed_at or otp.created_at
+            otp.save(update_fields=["consumed_at"])
+            raise serializers.ValidationError(
+                {"code": "Too many attempts. Request a new code."}
+            )
+        if not otp.matches(code):
+            raise serializers.ValidationError({"code": "Invalid verification code."})
+        user = User.objects.filter(email=email).first()
+        if not user or not user.is_active:
+            raise serializers.ValidationError({"email": "Account not found."})
+        attrs["_otp_row"] = otp
+        attrs["_user"] = user
         return attrs
 
     def save(self, **kwargs):
         from django.utils import timezone
 
-        token = self.validated_data["_token_row"]
-        user = token.user
+        otp = self.validated_data["_otp_row"]
+        user = self.validated_data["_user"]
         user.set_password(self.validated_data["new_password"])
         user.email_verified = True
         user.is_active = True
         user.save(update_fields=["password", "email_verified", "is_active"])
-        token.consumed_at = timezone.now()
-        token.save(update_fields=["consumed_at"])
-        return {"email": user.email, "detail": "Password updated. You can sign in now."}
+        otp.consumed_at = timezone.now()
+        otp.save(update_fields=["consumed_at"])
+        refresh = RefreshToken.for_user(user)
+        return {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": UserSerializer(user).data,
+            "detail": "Password updated.",
+        }

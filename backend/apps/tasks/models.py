@@ -21,7 +21,7 @@ class TaskType(models.TextChoices):
 
 class Task(TenantModel):
     """
-    Jira-style work item.
+    Agile work item.
 
     issue_key is denormalized as PROJECTKEY-NUMBER (e.g. WTM-101).
     parent != null → sub-task.
@@ -163,7 +163,7 @@ def task_attachment_upload_to(instance, filename):
 
 
 class TaskAttachment(TenantModel):
-    """Jira-style attachments: files, images (paste), audio, video."""
+    """Issue attachments: files, images (paste), audio, video."""
 
     class Kind(models.TextChoices):
         FILE = "file", "File"

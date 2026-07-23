@@ -6,7 +6,7 @@ from apps.core.models import TenantModel
 
 class CalendarEvent(TenantModel):
     """
-    TeamUp-style calendar entry.
+    Shared team calendar entry.
 
     source='task' rows are auto-synced from Task due/start dates.
     source='manual' rows are standalone meetings / blocks.

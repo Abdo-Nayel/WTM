@@ -1,6 +1,6 @@
 # WorkTaskMe Mobile
 
-Flutter client for **WorkTaskMe** — Jira-style Kanban boards plus TeamUp-style team calendar.
+Flutter client for **WorkTaskMe** — Agile Kanban boards plus a shared team calendar.
 
 ## Prerequisites
 
