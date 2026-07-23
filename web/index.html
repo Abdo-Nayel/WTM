@@ -549,7 +549,7 @@
     }
     .board-filters {
       display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-      margin: 0 0 12px; padding: 8px 10px;
+      margin: 0 0 12px; padding: 8px 10px; position: relative;
       background: color-mix(in srgb, var(--panel-solid) 80%, transparent);
       border: 1px solid var(--line); border-radius: 8px;
     }
@@ -576,6 +576,63 @@
     .assignee-filter-btn.unassigned {
       background: color-mix(in srgb, var(--muted) 35%, transparent); color: var(--text);
     }
+    .people-filter-wrap { position: relative; display: inline-flex; align-items: center; gap: 8px; }
+    .people-filter-btn {
+      width: auto; margin: 0; display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 12px; border-radius: 6px; border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--text) 6%, transparent); color: var(--text);
+      font-weight: 700; font-size: .85rem; cursor: pointer;
+    }
+    .people-filter-btn:hover { background: color-mix(in srgb, var(--text) 10%, transparent); }
+    .people-filter-btn.active {
+      border-color: color-mix(in srgb, var(--accent-blue, #0c66e4) 55%, transparent);
+      background: color-mix(in srgb, var(--accent-blue, #0c66e4) 16%, transparent);
+    }
+    .people-filter-btn .count-pill {
+      min-width: 18px; height: 18px; border-radius: 999px; padding: 0 6px;
+      background: var(--accent-blue, #0c66e4); color: #fff;
+      font-size: .72rem; display: inline-grid; place-items: center;
+    }
+    .people-filter-menu {
+      position: absolute; top: calc(100% + 6px); inset-inline-start: 0; z-index: 40;
+      width: min(320px, 92vw); max-height: min(420px, 70vh);
+      display: flex; flex-direction: column;
+      background: var(--panel-solid, var(--panel));
+      border: 1px solid var(--line); border-radius: 10px;
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .people-filter-menu.hidden { display: none !important; }
+    .people-filter-search {
+      margin: 10px 10px 6px; width: calc(100% - 20px); box-sizing: border-box;
+      padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line);
+      background: var(--input); color: var(--text);
+    }
+    .people-filter-list {
+      overflow: auto; padding: 4px 6px 8px; display: flex; flex-direction: column; gap: 2px;
+    }
+    .people-filter-item {
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      padding: 8px 10px; border: 0; border-radius: 8px; cursor: pointer;
+      background: transparent; color: var(--text); text-align: start;
+    }
+    .people-filter-item:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
+    .people-filter-item input { width: 16px; height: 16px; accent-color: var(--accent-blue, #0c66e4); flex: 0 0 auto; }
+    .people-filter-avatar {
+      width: 28px; height: 28px; border-radius: 999px; flex: 0 0 auto;
+      display: grid; place-items: center; color: #fff; font-size: .68rem; font-weight: 800;
+    }
+    .people-filter-meta { min-width: 0; flex: 1; }
+    .people-filter-name {
+      font-weight: 700; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .people-filter-email {
+      color: var(--muted); font-size: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .people-filter-footer {
+      display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px;
+      border-top: 1px solid var(--line);
+    }
+    .people-filter-footer .btn { width: auto; margin: 0; padding: 6px 10px; }
     .share-actions {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px; margin: 14px 0;
@@ -2182,9 +2239,23 @@
           </div>
         </div>
         <div class="board-filters">
-          <input class="board-filter-search" id="boardAssigneeSearch" type="search"
-            data-i18n-placeholder="filter_user_email" placeholder="Filter by user or email" />
-          <div class="assignee-filter" id="assigneeFilter"></div>
+          <div class="people-filter-wrap" id="peopleFilterWrap">
+            <button type="button" class="people-filter-btn" id="peopleFilterBtn" aria-expanded="false">
+              <span aria-hidden="true">☰</span>
+              <span data-i18n="filter_people">Filter</span>
+              <span class="count-pill hidden" id="peopleFilterCount">0</span>
+            </button>
+            <div class="people-filter-menu hidden" id="peopleFilterMenu" role="dialog" aria-label="Filter by people">
+              <input type="search" class="people-filter-search" id="peopleFilterSearch"
+                data-i18n-placeholder="filter_people_search" placeholder="Search names or emails" />
+              <div class="people-filter-list" id="peopleFilterList"></div>
+              <div class="people-filter-footer">
+                <button type="button" class="btn ghost" id="clearPeopleFilter" data-i18n="clear_filters">Clear</button>
+                <button type="button" class="btn atl-primary" id="donePeopleFilter" data-i18n="done">Done</button>
+              </div>
+            </div>
+          </div>
+          <div class="assignee-filter" id="assigneeFilter" aria-label="Quick people filter"></div>
           <button type="button" class="btn ghost" id="clearBoardFilters" data-i18n="clear_filters">Clear</button>
         </div>
         <div class="kanban" id="kanban"></div>
@@ -2430,6 +2501,9 @@ const I18N = {
     password_updated: "Password updated",
     captcha_required: "Please complete the captcha",
     filter_user_email: "Filter by user or email",
+    filter_people: "Filter",
+    filter_people_search: "Search names or emails",
+    done: "Done",
     clear_filters: "Clear",
     filter_all: "All",
     filter_unassigned: "Unassigned",
@@ -2731,6 +2805,9 @@ const I18N = {
     password_updated: "تم تحديث كلمة المرور",
     captcha_required: "أكمل التحقق من أنك لست بوت",
     filter_user_email: "فلترة بالمستخدم أو الإيميل",
+    filter_people: "فلترة",
+    filter_people_search: "ابحث بالاسم أو الإيميل",
+    done: "تم",
     clear_filters: "مسح",
     filter_all: "الكل",
     filter_unassigned: "غير معيّن",
@@ -2940,8 +3017,10 @@ const state = {
   calCursor: new Date(),
   pendingInvite: new URLSearchParams(location.search).get("invite") || localStorage.getItem("wtm_pending_invite") || "",
   activeTab: "dashboard",
-  filterAssigneeId: null, // null = all, "" = unassigned, uuid = user
+  filterAssigneeIds: [], // [] = all, includes "" for unassigned, uuid strings for users
   filterQuery: "",
+  peopleFilterOpen: false,
+  peopleFilterQ: "",
   otpPurpose: "register", // register | reset
   resetEmail: "",
   resetCode: "",
@@ -4397,48 +4476,174 @@ function memberInitials(user) {
   return String(name).split(/[\s@]+/).filter(Boolean).map((p) => p[0]).join("").slice(0, 2).toUpperCase();
 }
 
+function memberDisplayName(user) {
+  const name = String(user?.full_name || "").trim();
+  if (name) return name;
+  const email = String(user?.email || "").trim();
+  if (!email) return t("filter_unassigned");
+  return email.split("@")[0] || email;
+}
+
+function avatarColor(seed) {
+  const s = String(seed || "?");
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  const hue = h % 360;
+  return `hsl(${hue} 58% 42%)`;
+}
+
+function selectedAssigneeSet() {
+  return new Set((state.filterAssigneeIds || []).map(String));
+}
+
+function isPeopleFilterActive() {
+  return (state.filterAssigneeIds || []).length > 0;
+}
+
+function toggleAssigneeFilter(id) {
+  const key = String(id);
+  const set = selectedAssigneeSet();
+  if (set.has(key)) set.delete(key);
+  else set.add(key);
+  state.filterAssigneeIds = [...set];
+  renderAssigneeFilter();
+  renderPeopleFilterMenu();
+  applyBoardFilters();
+}
+
+function clearPeopleFilters() {
+  state.filterAssigneeIds = [];
+  state.peopleFilterQ = "";
+  if ($("peopleFilterSearch")) $("peopleFilterSearch").value = "";
+  renderAssigneeFilter();
+  renderPeopleFilterMenu();
+  applyBoardFilters();
+}
+
+function setPeopleFilterOpen(open) {
+  state.peopleFilterOpen = !!open;
+  const menu = $("peopleFilterMenu");
+  const btn = $("peopleFilterBtn");
+  menu?.classList.toggle("hidden", !state.peopleFilterOpen);
+  btn?.classList.toggle("active", state.peopleFilterOpen || isPeopleFilterActive());
+  btn?.setAttribute("aria-expanded", state.peopleFilterOpen ? "true" : "false");
+  if (state.peopleFilterOpen) {
+    renderPeopleFilterMenu();
+    setTimeout(() => $("peopleFilterSearch")?.focus(), 30);
+  }
+}
+
+function renderPeopleFilterMenu() {
+  const list = $("peopleFilterList");
+  const count = $("peopleFilterCount");
+  const btn = $("peopleFilterBtn");
+  if (!list) return;
+  const selected = selectedAssigneeSet();
+  const q = (state.peopleFilterQ || "").trim().toLowerCase();
+  const members = state.members || [];
+
+  const rows = [];
+  const unassignedLabel = t("filter_unassigned");
+  if (!q || unassignedLabel.toLowerCase().includes(q) || "unassigned".includes(q)) {
+    rows.push({
+      id: "",
+      name: unassignedLabel,
+      email: "",
+      initials: "?",
+      color: "color-mix(in srgb, var(--muted) 55%, #64748B)",
+    });
+  }
+  members.forEach((m) => {
+    const u = m.user || {};
+    if (!u.id) return;
+    const name = memberDisplayName(u);
+    const email = String(u.email || "");
+    const hay = `${name} ${email}`.toLowerCase();
+    if (q && !hay.includes(q)) return;
+    rows.push({
+      id: String(u.id),
+      name,
+      email,
+      initials: memberInitials(u),
+      color: avatarColor(u.id || name),
+    });
+  });
+
+  list.innerHTML = rows.map((r) => {
+    const checked = selected.has(String(r.id)) ? "checked" : "";
+    return `<label class="people-filter-item">
+      <input type="checkbox" data-filter-assignee="${escapeHtml(String(r.id))}" ${checked} />
+      <span class="people-filter-avatar" style="background:${escapeHtml(r.color)}">${escapeHtml(r.initials)}</span>
+      <span class="people-filter-meta">
+        <span class="people-filter-name">${escapeHtml(r.name)}</span>
+        ${r.email ? `<span class="people-filter-email">${escapeHtml(r.email)}</span>` : ""}
+      </span>
+    </label>`;
+  }).join("") || `<div class="muted" style="padding:12px">${escapeHtml(t("filter_people_search"))}</div>`;
+
+  list.querySelectorAll("input[data-filter-assignee]").forEach((input) => {
+    input.onchange = () => {
+      toggleAssigneeFilter(input.getAttribute("data-filter-assignee"));
+    };
+  });
+
+  const n = selected.size;
+  if (count) {
+    count.textContent = String(n);
+    count.classList.toggle("hidden", n === 0);
+  }
+  btn?.classList.toggle("active", state.peopleFilterOpen || n > 0);
+}
+
 function renderAssigneeFilter() {
   const wrap = $("assigneeFilter");
   if (!wrap) return;
   const members = state.members || [];
-  const active = state.filterAssigneeId;
+  const selected = selectedAssigneeSet();
   const parts = [
-    `<button type="button" class="assignee-filter-btn all ${active == null ? "active" : ""}" data-filter-assignee="*">${escapeHtml(t("filter_all"))}</button>`,
-    `<button type="button" class="assignee-filter-btn unassigned ${active === "" ? "active" : ""}" data-filter-assignee="" title="${escapeHtml(t("filter_unassigned"))}">?</button>`,
+    `<button type="button" class="assignee-filter-btn all ${!selected.size ? "active" : ""}" data-filter-assignee="*" title="${escapeHtml(t("filter_all"))}">${escapeHtml(t("filter_all"))}</button>`,
+    `<button type="button" class="assignee-filter-btn unassigned ${selected.has("") ? "active" : ""}" data-filter-assignee="" title="${escapeHtml(t("filter_unassigned"))}">?</button>`,
   ];
   members.forEach((m) => {
     const u = m.user || {};
     if (!u.id) return;
-    const title = `${u.full_name || ""} ${u.email || ""}`.trim();
-    parts.push(`<button type="button" class="assignee-filter-btn ${String(active) === String(u.id) ? "active" : ""}" data-filter-assignee="${u.id}" title="${escapeHtml(title)}">${escapeHtml(memberInitials(u))}</button>`);
+    const name = memberDisplayName(u);
+    const active = selected.has(String(u.id)) ? "active" : "";
+    parts.push(
+      `<button type="button" class="assignee-filter-btn ${active}" data-filter-assignee="${u.id}" title="${escapeHtml(name)}" style="background:${avatarColor(u.id || name)}">${escapeHtml(memberInitials(u))}</button>`
+    );
   });
   wrap.innerHTML = parts.join("");
   wrap.querySelectorAll("[data-filter-assignee]").forEach((btn) => {
     btn.onclick = () => {
       const v = btn.getAttribute("data-filter-assignee");
-      state.filterAssigneeId = v === "*" ? null : v;
-      renderAssigneeFilter();
-      applyBoardFilters();
+      if (v === "*") {
+        clearPeopleFilters();
+        return;
+      }
+      toggleAssigneeFilter(v);
     };
   });
+  renderPeopleFilterMenu();
 }
 
 function applyBoardFilters() {
-  const textQ = (state.filterQuery || ($("boardAssigneeSearch")?.value || $("boardSearch")?.value || "")).trim().toLowerCase();
+  const textQ = (state.filterQuery || ($("boardSearch")?.value || "")).trim().toLowerCase();
   state.filterQuery = textQ;
-  const assigneeId = state.filterAssigneeId;
+  const selected = selectedAssigneeSet();
   document.querySelectorAll("#kanban .card").forEach((card) => {
     const task = (state.board?.tasks || []).find((x) => String(x.id) === String(card.dataset.id));
     const hay = card.textContent.toLowerCase();
     const email = (task?.assignee?.email || "").toLowerCase();
-    const name = (task?.assignee?.full_name || "").toLowerCase();
+    const name = (task?.assignee?.full_name || memberDisplayName(task?.assignee) || "").toLowerCase();
     const textOk = !textQ || hay.includes(textQ) || email.includes(textQ) || name.includes(textQ);
     let assigneeOk = true;
-    if (assigneeId === "") assigneeOk = !task?.assignee?.id;
-    else if (assigneeId != null) assigneeOk = String(task?.assignee?.id || "") === String(assigneeId);
+    if (selected.size) {
+      const aid = task?.assignee?.id != null ? String(task.assignee.id) : "";
+      assigneeOk = selected.has(aid);
+    }
     card.style.display = textOk && assigneeOk ? "" : "none";
   });
-  // Update visible counts per column
   document.querySelectorAll("#kanban .col").forEach((col) => {
     const visible = [...col.querySelectorAll(".card")].filter((c) => c.style.display !== "none").length;
     const countEl = col.querySelector(".col-count");
@@ -5516,7 +5721,6 @@ $("globalCreateBtn").onclick = () => {
 };
 $("boardSearch").oninput = () => {
   state.filterQuery = ($("boardSearch").value || "").trim().toLowerCase();
-  if ($("boardAssigneeSearch")) $("boardAssigneeSearch").value = $("boardSearch").value;
   applyBoardFilters();
 };
 $("boardSearch").addEventListener("keydown", async (e) => {
@@ -5524,26 +5728,28 @@ $("boardSearch").addEventListener("keydown", async (e) => {
   e.preventDefault();
   await openTaskFromIssueSearch($("boardSearch").value);
 });
-if ($("boardAssigneeSearch")) {
-  $("boardAssigneeSearch").oninput = () => {
-    state.filterQuery = ($("boardAssigneeSearch").value || "").trim().toLowerCase();
-    if ($("boardSearch")) $("boardSearch").value = $("boardAssigneeSearch").value;
-    applyBoardFilters();
-  };
-  $("boardAssigneeSearch").addEventListener("keydown", async (e) => {
-    if (e.key !== "Enter") return;
-    e.preventDefault();
-    await openTaskFromIssueSearch($("boardAssigneeSearch").value);
-  });
-}
+
+$("peopleFilterBtn")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  setPeopleFilterOpen(!state.peopleFilterOpen);
+});
+$("peopleFilterSearch")?.addEventListener("input", () => {
+  state.peopleFilterQ = ($("peopleFilterSearch").value || "").trim().toLowerCase();
+  renderPeopleFilterMenu();
+});
+$("clearPeopleFilter")?.addEventListener("click", () => clearPeopleFilters());
+$("donePeopleFilter")?.addEventListener("click", () => setPeopleFilterOpen(false));
+document.addEventListener("click", (e) => {
+  if (!state.peopleFilterOpen) return;
+  const wrap = $("peopleFilterWrap");
+  if (wrap && !wrap.contains(e.target)) setPeopleFilterOpen(false);
+});
+
 if ($("clearBoardFilters")) {
   $("clearBoardFilters").onclick = () => {
-    state.filterAssigneeId = null;
     state.filterQuery = "";
     if ($("boardSearch")) $("boardSearch").value = "";
-    if ($("boardAssigneeSearch")) $("boardAssigneeSearch").value = "";
-    renderAssigneeFilter();
-    applyBoardFilters();
+    clearPeopleFilters();
   };
 }
 
