@@ -71,6 +71,8 @@ def web_assets(request, path):
 
 urlpatterns = [
     path("", spa, name="spa"),
+    path("reset-password/", spa, name="spa-reset-password"),
+    path("reset-password", spa, name="spa-reset-password-noslash"),
     re_path(r"^assets/(?P<path>.*)$", web_assets, name="web-assets"),
     path("admin/", admin.site.urls),
     path("api/health/", health, name="health"),

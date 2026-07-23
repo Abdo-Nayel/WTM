@@ -121,7 +121,7 @@ class TaskViewSet(TenantViewSetMixin, viewsets.ModelViewSet):
             broadcast_workspace_event(
                 channel_layer,
                 "board",
-                task.workspace_id,
+                str(task.workspace_id),
                 event_type,
                 {
                     "id": str(task.id),
@@ -142,12 +142,21 @@ class TaskViewSet(TenantViewSetMixin, viewsets.ModelViewSet):
         serializer = TaskMoveSerializer(task, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        # JSONField cannot store raw UUID objects from validated_data
+        meta = {}
+        for key, value in serializer.validated_data.items():
+            if value is None:
+                meta[key] = None
+            elif hasattr(value, "hex"):  # uuid.UUID
+                meta[key] = str(value)
+            else:
+                meta[key] = value
         TaskActivity.objects.create(
             workspace=task.workspace,
             task=task,
             actor=request.user,
             action="moved",
-            meta=serializer.validated_data,
+            meta=meta,
         )
         self._broadcast("task.moved", task)
         return Response(TaskListSerializer(task).data)

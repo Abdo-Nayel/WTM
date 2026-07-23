@@ -154,7 +154,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 8),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () =>
+                                    context.go('/forgot-password'),
+                                child: const Text('Forgot password?'),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
                             FilledButton(
                               onPressed: auth.isLoading ? null : _submit,
                               child: auth.isLoading
@@ -172,6 +181,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             TextButton(
                               onPressed: () => context.go('/register'),
                               child: const Text('Create an account'),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              '© 2026 WorkTaskMe · Powered by lyomastech',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: AppTheme.slateMuted),
                             ),
                           ],
                         ),

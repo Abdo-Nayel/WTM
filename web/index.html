@@ -116,6 +116,10 @@
       min-height: 100vh;
       transition: background .35s ease, color .25s ease;
     }
+    body.surface-light {
+      background: #fff !important;
+      color: #1a1a2e;
+    }
     html[dir="rtl"] body { font-family: "Noto Sans Arabic", "DM Sans", system-ui, sans-serif; }
     button, input, select, textarea { font: inherit; color: inherit; }
     .hidden { display: none !important; }
@@ -135,29 +139,23 @@
       50% { transform: scale(1.08); }
     }
     .auth-wrap {
-      min-height: 100vh; display: grid; place-items: center; padding: 28px 16px;
-      position: relative; overflow: hidden;
-      background:
-        radial-gradient(900px 480px at 0% 100%, color-mix(in srgb, #1868db 18%, transparent), transparent 60%),
-        radial-gradient(800px 420px at 100% 0%, color-mix(in srgb, #f5cd47 12%, transparent), transparent 55%),
-        #f7f8f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 56px 16px 40px;
+      position: relative;
+      overflow: visible;
+      background: #fff;
     }
     html[data-theme="ocean"] .auth-wrap,
     html[data-theme="slate"] .auth-wrap,
     body.theme-dark .auth-wrap {
-      background:
-        radial-gradient(900px 480px at 0% 100%, color-mix(in srgb, #4c9aff 14%, transparent), transparent 60%),
-        radial-gradient(800px 420px at 100% 0%, color-mix(in srgb, #579dff 10%, transparent), transparent 55%),
-        var(--bg);
+      background: #fff;
     }
     .auth-wrap::before,
-    .auth-wrap::after {
-      content: ""; position: absolute; width: 280px; height: 280px; border-radius: 40px;
-      border: 18px solid color-mix(in srgb, #1868db 35%, transparent); opacity: .35;
-      pointer-events: none;
-    }
-    .auth-wrap::before { inset-inline-start: -40px; bottom: 8%; transform: rotate(18deg); }
-    .auth-wrap::after { inset-inline-end: -50px; top: 10%; transform: rotate(-12deg); border-color: color-mix(in srgb, #f5cd47 45%, transparent); }
+    .auth-wrap::after { display: none; }
     .auth-card, .panel, .modal {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -219,9 +217,10 @@
     html[data-theme="slate"] .auth-card label { color: var(--muted); }
     .auth-card input[type="email"],
     .auth-card input[type="password"],
-    .auth-card input[type="text"] {
+    .auth-card input[type="text"],
+    .auth-card input:not([type]) {
       width: 100%; background: #f7f8f9; border: 1px solid #dfe1e6;
-      border-radius: 4px; padding: 10px 12px; outline: none; color: #172b4d;
+      border-radius: 8px; padding: 10px 12px; outline: none; color: #172b4d;
     }
     html[data-theme="ocean"] .auth-card input,
     html[data-theme="slate"] .auth-card input {
@@ -1041,12 +1040,811 @@
       background: color-mix(in srgb, var(--jira-blue, #0c66e4) 10%, transparent);
       border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; color: var(--muted); font-size: .85rem; line-height: 1.45;
     }
+
+    /* —— Premium SaaS landing —— */
+    .mkt {
+      --mkt-ink: #0B1220;
+      --mkt-muted: #5B6B7C;
+      --mkt-line: rgba(15, 23, 42, .08);
+      --mkt-soft: #F4F7FB;
+      --mkt-brand: #4F46E5;
+      --mkt-brand-deep: #3730A3;
+      --mkt-cta: #4F46E5;
+      --mkt-accent: #10B981;
+      --mkt-ease: cubic-bezier(.22, 1, .36, 1);
+      min-height: 100vh;
+      color: var(--mkt-ink);
+      font-family: "DM Sans", "Noto Sans Arabic", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 480px at 8% -5%, rgba(99,102,241,.18), transparent 55%),
+        radial-gradient(700px 420px at 95% 8%, rgba(16,185,129,.12), transparent 50%),
+        radial-gradient(600px 380px at 50% 100%, rgba(79,70,229,.08), transparent 55%),
+        linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 42%, #F8FAFC 100%);
+      overflow-x: hidden;
+    }
+    .mkt-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 12px clamp(16px, 4vw, 56px);
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border-bottom: 1px solid var(--mkt-line);
+      box-shadow: 0 1px 0 rgba(255,255,255,.6);
+    }
+    .mkt-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 1.2rem; letter-spacing: -.04em; color: var(--mkt-ink);
+    }
+    .mkt-brand img { width: 32px; height: 32px; border-radius: 9px; box-shadow: 0 8px 18px rgba(79,70,229,.25); }
+    .mkt-nav-links {
+      display: flex; gap: 22px; align-items: center;
+      font-size: .92rem; font-weight: 600; color: var(--mkt-muted);
+    }
+    .mkt-nav-links a {
+      color: inherit; text-decoration: none;
+      transition: color .25s var(--mkt-ease), transform .25s var(--mkt-ease);
+    }
+    .mkt-nav-links a:hover { color: var(--mkt-brand); transform: translateY(-1px); }
+    .mkt-nav-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .mkt-nav-actions .lang-toggle {
+      border: 1px solid var(--mkt-line); border-radius: 10px; overflow: hidden; background: rgba(255,255,255,.9);
+    }
+    .mkt-nav-actions .lang-toggle button {
+      background: transparent; color: var(--mkt-muted); border: 0;
+      padding: 6px 10px; font-weight: 700; font-size: .75rem; cursor: pointer;
+    }
+    .mkt-nav-actions .lang-toggle button.active { background: #EEF2FF; color: var(--mkt-brand); }
+    #authView .lang-toggle {
+      border: 1px solid #E2E8F0; border-radius: 8px; background: #fff;
+    }
+    #authView .lang-toggle button {
+      background: transparent; color: #64748B; border: 0;
+      padding: 6px 10px; font-weight: 700; font-size: .75rem; cursor: pointer;
+    }
+    .mkt .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      width: auto; margin: 0; padding: 11px 18px; border-radius: 12px;
+      font-weight: 700; font-size: .9rem; cursor: pointer; text-decoration: none;
+      border: 1px solid transparent;
+      transition: transform .28s var(--mkt-ease), box-shadow .28s var(--mkt-ease), background .25s, border-color .25s, color .25s;
+    }
+    .mkt .btn:hover { transform: translateY(-3px); filter: none; }
+    .mkt .btn:active { transform: translateY(-1px); }
+    .mkt-nav .btn.ghost {
+      background: rgba(255,255,255,.85); border-color: rgba(79,70,229,.35); color: var(--mkt-brand);
+      box-shadow: 0 8px 20px rgba(15,23,42,.04);
+    }
+    .mkt-nav .btn.ghost:hover { background: #EEF2FF; box-shadow: 0 14px 28px rgba(79,70,229,.12); }
+    .mkt-nav .btn.primary {
+      background: linear-gradient(135deg, #4F46E5, #6366F1);
+      color: #fff; border: 0;
+      box-shadow: 0 12px 28px rgba(79,70,229,.32);
+    }
+    .mkt-nav .btn.primary:hover { box-shadow: 0 18px 36px rgba(79,70,229,.4); }
+    .mkt-hero {
+      padding: 64px clamp(16px, 5vw, 64px) 88px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .mkt-hero::before {
+      content: ""; position: absolute; inset: -20% -10% auto -10%; height: 70%;
+      background:
+        radial-gradient(circle at 20% 40%, rgba(99,102,241,.35), transparent 42%),
+        radial-gradient(circle at 80% 20%, rgba(16,185,129,.22), transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(56,189,248,.15), transparent 45%);
+      filter: blur(8px);
+      animation: mktMesh 14s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes mktMesh {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(18px) scale(1.05); }
+    }
+    @keyframes mktFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+    @keyframes mktRise {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes mktBadgeFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    @keyframes mktPulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(79,70,229,.35); }
+      70% { box-shadow: 0 0 0 14px rgba(79,70,229,0); }
+      100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); }
+    }
+    .mkt-reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .7s var(--mkt-ease), transform .7s var(--mkt-ease);
+    }
+    .mkt-reveal.in { opacity: 1; transform: none; }
+    .mkt-hero-inner { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; }
+    .mkt-hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; margin-bottom: 14px;
+      padding: 7px 14px; border-radius: 999px;
+      color: var(--mkt-brand-deep);
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(79,70,229,.18);
+      backdrop-filter: blur(10px);
+      animation: mktRise .55s var(--mkt-ease) both;
+    }
+    .mkt-hero h1 {
+      font-weight: 800; font-size: clamp(2.15rem, 5.4vw, 3.55rem);
+      line-height: 1.08; letter-spacing: -.035em; margin: 0 0 16px;
+      background: linear-gradient(120deg, #1E1B4B 10%, #4F46E5 45%, #0F766E 95%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: mktRise .6s .06s var(--mkt-ease) both;
+    }
+    .mkt-hero p.lead {
+      font-size: clamp(1.05rem, 2vw, 1.22rem); color: var(--mkt-muted);
+      max-width: 36rem; margin: 0 auto 28px; line-height: 1.6;
+      animation: mktRise .6s .12s var(--mkt-ease) both;
+    }
+    .mkt-cta {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      animation: mktRise .6s .18s var(--mkt-ease) both;
+    }
+    .mkt-hero .mkt-cta .btn.primary {
+      background: linear-gradient(135deg, #4F46E5, #6366F1); color: #fff; border: 0;
+      padding: 14px 26px; box-shadow: 0 16px 34px rgba(79,70,229,.35);
+      animation: mktPulseRing 2.4s ease infinite;
+    }
+    .mkt-hero .mkt-cta .btn.ghost {
+      background: rgba(255,255,255,.75); border: 1px solid rgba(15,23,42,.1);
+      color: var(--mkt-ink); padding: 14px 22px;
+      box-shadow: 0 10px 24px rgba(15,23,42,.06);
+      backdrop-filter: blur(8px);
+    }
+    .mkt-hero .mkt-cta .btn.ghost:hover {
+      border-color: rgba(79,70,229,.35); color: var(--mkt-brand);
+      box-shadow: 0 16px 30px rgba(79,70,229,.12);
+    }
+    .mkt-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+      max-width: 900px; margin: 40px auto 0; text-align: center;
+      animation: mktRise .6s .24s var(--mkt-ease) both;
+    }
+    .mkt-stats > div {
+      padding: 16px 14px; border-radius: 18px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.08);
+      backdrop-filter: blur(12px);
+      transition: transform .3s var(--mkt-ease), box-shadow .3s var(--mkt-ease);
+    }
+    .mkt-stats > div:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 40px -8px rgba(79,70,229,.18);
+    }
+    .mkt-stats strong {
+      display: block; font-size: clamp(1.35rem, 2.5vw, 1.75rem); font-weight: 800;
+      margin-bottom: 4px; color: var(--mkt-brand-deep);
+    }
+    .mkt-stats span { font-size: .86rem; color: var(--mkt-muted); line-height: 1.4; }
+    .mkt-product {
+      margin: -28px auto 0; padding: 0 clamp(16px, 4vw, 48px) 36px;
+      max-width: 1100px; position: relative; z-index: 2;
+    }
+    .mkt-product-shell { position: relative; }
+    .mkt-float-badge {
+      position: absolute; z-index: 3; padding: 10px 14px; border-radius: 14px;
+      background: rgba(255,255,255,.92); border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.12);
+      backdrop-filter: blur(10px);
+      font-size: .8rem; font-weight: 700; color: var(--mkt-ink);
+      animation: mktBadgeFloat 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .mkt-float-badge.a { top: 18%; inset-inline-start: -8px; color: #3730A3; }
+    .mkt-float-badge.b { bottom: 22%; inset-inline-end: -6px; animation-delay: 1.2s; color: #047857; }
+    .mkt-float-badge span { display: block; font-size: .68rem; font-weight: 600; color: var(--mkt-muted); margin-top: 2px; }
+    .mkt-product-frame {
+      background: linear-gradient(160deg, #0F172A, #1E293B 55%, #0F172A);
+      border-radius: 22px; padding: 14px 14px 18px;
+      box-shadow: 0 30px 60px -12px rgba(15,23,42,.45), 0 0 0 1px rgba(148,163,184,.2);
+      overflow: hidden; position: relative;
+      transition: transform .4s var(--mkt-ease), box-shadow .4s var(--mkt-ease);
+    }
+    .mkt-product-frame:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 40px 70px -14px rgba(79,70,229,.35), 0 0 0 1px rgba(165,180,252,.25);
+    }
+    .mkt-product-top { display: flex; gap: 6px; margin-bottom: 12px; padding-inline-start: 4px; }
+    .mkt-product-top i { width: 10px; height: 10px; border-radius: 50%; display: block; background: #64748B; }
+    .mkt-product-top i:nth-child(1) { background: #F87171; }
+    .mkt-product-top i:nth-child(2) { background: #FBBF24; }
+    .mkt-product-top i:nth-child(3) { background: #34D399; }
+    .mkt-panel { display: none; min-height: 280px; animation: mktRise .45s var(--mkt-ease); }
+    .mkt-panel.on { display: block; }
+    .mkt-board-mock { display: grid; grid-template-columns: 168px 1fr; gap: 12px; min-height: 260px; }
+    .mkt-board-side {
+      background: rgba(30,41,59,.9); border-radius: 14px; padding: 14px 12px; color: #94A3B8; font-size: .8rem;
+    }
+    .mkt-board-side .logo-row {
+      display: flex; align-items: center; gap: 8px; color: #F8FAFC; font-weight: 700; margin-bottom: 14px;
+    }
+    .mkt-board-side .logo-row img { width: 22px; height: 22px; border-radius: 5px; }
+    .mkt-board-side div.nav-item { padding: 8px 10px; border-radius: 8px; margin-bottom: 4px; transition: background .2s; }
+    .mkt-board-side div.nav-item.on { background: #334155; color: #fff; }
+    .mkt-board-main { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .mkt-col { background: rgba(30,41,59,.85); border-radius: 14px; padding: 10px; min-height: 220px; }
+    .mkt-col h4 {
+      margin: 0 0 10px; font-size: .72rem; color: #94A3B8; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .mkt-card-mock {
+      background: #334155; border-radius: 12px; padding: 10px; margin-bottom: 8px; color: #E2E8F0; font-size: .82rem;
+      border: 1px solid rgba(255,255,255,.04);
+      transition: transform .28s var(--mkt-ease), border-color .25s, box-shadow .28s;
+    }
+    .mkt-card-mock:hover {
+      transform: translateY(-3px);
+      border-color: rgba(165,180,252,.45);
+      box-shadow: 0 12px 24px rgba(0,0,0,.25);
+    }
+    .mkt-card-mock .chip {
+      display: inline-block; margin-top: 8px; font-size: .68rem; padding: 2px 8px; border-radius: 999px;
+      background: rgba(79,70,229,.4); color: #C7D2FE;
+    }
+    .mkt-cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+    }
+    .mkt-cal-day {
+      background: rgba(30,41,59,.9); border-radius: 12px; min-height: 88px; padding: 8px;
+      border: 1px solid rgba(148,163,184,.15); color: #CBD5E1; font-size: .72rem;
+    }
+    .mkt-cal-day strong { display: block; margin-bottom: 6px; color: #94A3B8; }
+    .mkt-cal-event {
+      margin-top: 4px; padding: 4px 6px; border-radius: 7px; font-size: .68rem; font-weight: 600;
+      background: rgba(79,70,229,.35); color: #C7D2FE;
+    }
+    .mkt-cal-event.green { background: rgba(16,185,129,.28); color: #A7F3D0; }
+    .mkt-cal-event.amber { background: rgba(245,158,11,.28); color: #FDE68A; }
+    .mkt-ws-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .mkt-ws-card {
+      background: rgba(30,41,59,.9); border-radius: 14px; padding: 16px; color: #E2E8F0;
+      border: 1px solid rgba(148,163,184,.15);
+      transition: transform .28s var(--mkt-ease);
+    }
+    .mkt-ws-card:hover { transform: translateY(-3px); }
+    .mkt-ws-card .role {
+      display: inline-block; margin-top: 10px; font-size: .68rem; font-weight: 800;
+      padding: 3px 8px; border-radius: 999px; background: #EEF2FF; color: #3730A3;
+    }
+    .mkt-rt-feed { display: grid; gap: 10px; }
+    .mkt-rt-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: rgba(30,41,59,.9); border-radius: 14px; padding: 12px 14px;
+      border: 1px solid rgba(148,163,184,.15); color: #E2E8F0; font-size: .85rem;
+    }
+    .mkt-rt-dot {
+      width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+      background: #34D399; box-shadow: 0 0 0 4px rgba(52,211,153,.2);
+      animation: mktPulseRing 2s ease infinite;
+    }
+    .mkt-pills {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;
+    }
+    .mkt-pill {
+      border: 1px solid rgba(15,23,42,.1); background: rgba(255,255,255,.85); color: var(--mkt-muted);
+      border-radius: 999px; padding: 10px 16px; font-size: .88rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+      transition: transform .28s var(--mkt-ease), background .25s, color .25s, border-color .25s, box-shadow .28s;
+    }
+    .mkt-pill:hover {
+      transform: translateY(-3px); border-color: #C7D2FE; color: var(--mkt-brand);
+      box-shadow: 0 14px 28px rgba(79,70,229,.12);
+    }
+    .mkt-pill.on {
+      background: linear-gradient(135deg, #4F46E5, #6366F1); border-color: transparent; color: #fff;
+      box-shadow: 0 14px 30px rgba(79,70,229,.3);
+    }
+    .mkt-section { padding: 56px clamp(16px, 4vw, 48px); max-width: 1120px; margin: 0 auto; }
+    .mkt-section.alt {
+      background: transparent; max-width: none; padding-inline: 0;
+    }
+    .mkt-section.alt .mkt-section-inner {
+      max-width: 1120px; margin: 0 auto; padding: 56px clamp(16px, 4vw, 48px);
+      border-radius: 28px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.06);
+      backdrop-filter: blur(10px);
+    }
+    .mkt-section h2 {
+      font-weight: 800; font-size: clamp(1.55rem, 3vw, 2.2rem);
+      margin: 0 0 8px; text-align: center; letter-spacing: -.03em; color: var(--mkt-ink);
+    }
+    .mkt-section .sub {
+      text-align: center; color: var(--mkt-muted); margin: 0 auto 28px; max-width: 38rem; line-height: 1.55;
+    }
+    .mkt-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .mkt-grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .mkt-feature {
+      padding: 22px 20px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.75);
+      background: rgba(255,255,255,.72);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.08);
+      backdrop-filter: blur(10px);
+      transition: box-shadow .3s var(--mkt-ease), transform .3s var(--mkt-ease), border-color .25s;
+    }
+    .mkt-feature:hover {
+      box-shadow: 0 28px 45px -10px rgba(79,70,229,.18);
+      transform: translateY(-5px);
+      border-color: #C7D2FE;
+    }
+    .mkt-feature .tag {
+      display: inline-block; font-size: .68rem; font-weight: 800; letter-spacing: .06em;
+      color: var(--mkt-brand); margin-bottom: 8px; text-transform: uppercase;
+      background: #EEF2FF; padding: 3px 8px; border-radius: 999px;
+    }
+    .mkt-feature .ico {
+      width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center;
+      background: linear-gradient(135deg, #EEF2FF, #ECFDF5); color: var(--mkt-brand);
+      font-size: 1.15rem; margin-bottom: 12px; font-weight: 800;
+      box-shadow: 0 10px 20px rgba(79,70,229,.1);
+    }
+    .mkt-feature h3 { margin: 0 0 6px; font-size: 1.08rem; font-weight: 800; color: var(--mkt-ink); }
+    .mkt-feature p { margin: 0; color: var(--mkt-muted); line-height: 1.5; font-size: .93rem; }
+    .mkt-steps { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); margin-top: 8px; }
+    .mkt-step {
+      text-align: center; padding: 24px 18px; border-radius: 20px;
+      background: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.08);
+      backdrop-filter: blur(10px);
+      transition: transform .3s var(--mkt-ease), box-shadow .3s var(--mkt-ease);
+    }
+    .mkt-step:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 40px -12px rgba(79,70,229,.16);
+    }
+    .mkt-step .num {
+      width: 40px; height: 40px; margin: 0 auto 12px; border-radius: 50%;
+      display: grid; place-items: center; font-weight: 800; font-size: .95rem;
+      background: linear-gradient(135deg, #4F46E5, #6366F1); color: #fff;
+      box-shadow: 0 10px 22px rgba(79,70,229,.35);
+    }
+    .mkt-step h3 { margin: 0 0 6px; font-size: 1.05rem; font-weight: 800; }
+    .mkt-step p { margin: 0; color: var(--mkt-muted); font-size: .9rem; line-height: 1.45; }
+    .mkt-pricing-card {
+      max-width: 440px; margin: 0 auto; padding: 32px 26px; border-radius: 24px;
+      background: rgba(255,255,255,.8); border: 1px solid rgba(255,255,255,.85);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,.1);
+      backdrop-filter: blur(12px);
+      text-align: center;
+      transition: transform .3s var(--mkt-ease), box-shadow .3s var(--mkt-ease);
+    }
+    .mkt-pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 50px -12px rgba(79,70,229,.2);
+    }
+    .mkt-price-label {
+      display: inline-block; font-size: .75rem; font-weight: 800; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--mkt-brand); background: #EEF2FF;
+      padding: 4px 10px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .mkt-price { font-size: 1.85rem; font-weight: 800; margin-bottom: 8px; color: var(--mkt-ink); }
+    .mkt-pricing-card p { color: var(--mkt-muted); margin: 0; line-height: 1.5; font-size: .95rem; }
+    .mkt-cta-band {
+      margin: 24px clamp(16px, 4vw, 48px) 0; padding: 52px clamp(16px, 4vw, 48px);
+      text-align: center; border-radius: 28px;
+      background: linear-gradient(135deg, #312E81, #4F46E5 55%, #6366F1);
+      color: #fff;
+      box-shadow: 0 30px 60px -18px rgba(79,70,229,.45);
+    }
+    .mkt-cta-band h2 {
+      margin: 0 0 18px; font-size: clamp(1.35rem, 2.8vw, 1.95rem); font-weight: 800; letter-spacing: -.02em;
+    }
+    .mkt-cta-band .btn.primary {
+      background: #fff; color: #3730A3; border: 0;
+      padding: 13px 28px; border-radius: 12px; font-weight: 800;
+      box-shadow: 0 14px 30px rgba(15,23,42,.2);
+    }
+    .mkt-footer-rich { text-align: start; padding: 48px clamp(16px, 4vw, 48px) 0; }
+    .mkt-footer-grid {
+      max-width: 1120px; margin: 0 auto; display: grid; gap: 24px;
+      grid-template-columns: 1.4fr repeat(4, 1fr);
+    }
+    .mkt-footer-brand p { margin: 0; color: #64748B; font-size: .88rem; line-height: 1.5; max-width: 240px; }
+    .mkt-footer-grid h4 {
+      margin: 0 0 12px; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em;
+      color: #0F172A; font-weight: 800;
+    }
+    .mkt-footer-grid a, .mkt-footer-grid .mkt-foot-btn {
+      display: block; color: #64748B; text-decoration: none; font-size: .9rem;
+      margin: 0 0 8px; font-weight: 500; background: none; border: 0; padding: 0;
+      cursor: pointer; text-align: start; width: auto;
+      transition: color .2s, transform .2s var(--mkt-ease);
+    }
+    .mkt-footer-grid a:hover, .mkt-footer-grid .mkt-foot-btn:hover {
+      color: var(--mkt-brand); transform: translateX(2px);
+    }
+    .mkt-footer-bar {
+      max-width: 1120px; margin: 28px auto 0; padding: 18px 0 28px;
+      border-top: 1px solid var(--mkt-line);
+      text-align: center; color: #64748B; font-size: .82rem;
+    }
+    .mkt-demo-modal {
+      position: fixed; inset: 0; z-index: 80; display: none;
+      place-items: center; padding: 20px;
+      background: rgba(15,23,42,.55); backdrop-filter: blur(8px);
+    }
+    .mkt-demo-modal.open { display: grid; animation: mktRise .35s var(--mkt-ease); }
+    .mkt-demo-card {
+      width: min(720px, 100%); border-radius: 22px; overflow: hidden;
+      background: #0F172A; color: #E2E8F0;
+      box-shadow: 0 40px 80px rgba(0,0,0,.45);
+      border: 1px solid rgba(148,163,184,.25);
+    }
+    .mkt-demo-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(148,163,184,.15);
+    }
+    .mkt-demo-head strong { font-size: .95rem; }
+    .mkt-demo-head button {
+      background: transparent; border: 0; color: #94A3B8; font-size: 1.2rem; cursor: pointer;
+    }
+    .mkt-demo-body { padding: 18px; }
+    .mkt-demo-stage {
+      border-radius: 12px; min-height: 0; padding: 0;
+      background: linear-gradient(160deg, #1E293B, #0F172A);
+      border: 1px solid rgba(148,163,184,.22);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(99,102,241,.18);
+    }
+    .mkt-demo-video {
+      display: block; width: 100%; aspect-ratio: 16 / 9;
+      max-height: min(52vh, 420px); object-fit: cover;
+      background: #0B1220; border: 0; border-radius: 12px;
+      vertical-align: middle;
+    }
+    .mkt-demo-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+    @media (max-width: 900px) {
+      .mkt-footer-grid { grid-template-columns: 1fr 1fr; }
+      .mkt-float-badge { display: none; }
+      .mkt-ws-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 860px) {
+      .mkt-nav-links { display: none; }
+      .mkt-stats { grid-template-columns: 1fr; gap: 10px; }
+      .mkt-board-mock { grid-template-columns: 1fr; }
+      .mkt-board-side { display: none; }
+      .mkt-board-main { grid-template-columns: 1fr; }
+      .mkt-steps { grid-template-columns: 1fr; }
+      .mkt-cal-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .mkt-footer-grid { grid-template-columns: 1fr; }
+    }
+    .auth-legal {
+      margin-top: 18px; text-align: center; font-size: .75rem; color: #64748B; line-height: 1.5;
+    }
+    .auth-legal a { color: #4F46E5; text-decoration: none; font-weight: 700; }
+    .auth-back-home {
+      background: none; border: 0; color: #4F46E5; cursor: pointer;
+      font-weight: 600; padding: 0; margin: 0 0 12px; font-size: .85rem;
+      display: block; width: 100%; text-align: start;
+    }
+    #authView.auth-wrap,
+    #wsView.auth-wrap { background: #fff !important; }
+    #authView .auth-toolbar .theme-select { display: none; }
+    #authView .auth-card {
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 12px 40px rgba(15,23,42,.06);
+      background: #fff; color: #0F172A; width: min(420px, 100%);
+      border-radius: 16px;
+    }
+    #authView .atl-logo .word { color: #0F172A !important; }
+    #authView .atl-title { font-weight: 800; font-size: 1.4rem; color: #0F172A; }
+    #authView .auth-card label { color: #334155; }
+    #authView .auth-card input[type="email"],
+    #authView .auth-card input[type="password"],
+    #authView .auth-card input[type="text"],
+    #authView .auth-card input:not([type]) {
+      background: #F8FAFC !important; color: #0F172A !important;
+      border: 1px solid #E2E8F0 !important; border-radius: 8px;
+    }
+    #authView .auth-card input:focus {
+      border-color: #4F46E5 !important; box-shadow: 0 0 0 3px rgba(79,70,229,.15); outline: none;
+    }
+    #authView .auth-email-chip { background: #EEF2FF !important; color: #3730A3 !important; }
+    #authView .btn.atl-primary {
+      background: #4F46E5; border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(79,70,229,.25);
+    }
+    #authView .btn.atl-primary:hover { background: #3730A3; }
+    #authView .auth-footer-links button.linkish,
+    #authView .auth-step-back { color: #4F46E5; }
+    #authView .sso-btn {
+      border-radius: 8px; background: #fff; color: #0F172A; border: 1px solid #E2E8F0;
+    }
+    #authView .sso-btn:hover { background: #F8FAFC; border-color: #C7D2FE; }
+    #authView .oauth-divider { color: #64748B; }
+    #authView .muted, #authView .auth-subfoot { color: #64748B; }
+    #authView .help-banner { background: #EEF2FF; border-color: #C7D2FE; color: #312E81; }
+    #authView .error { color: #DC2626; }
+    #authView .bot-check { color: #334155; }
   </style>
 </head>
 <body>
   <div id="toast" class="toast"></div>
 
-  <section id="authView" class="auth-wrap">
+  <!-- Marketing site (web visitors) — Flutter app skips this -->
+  <section id="marketingView" class="mkt">
+    <header class="mkt-nav">
+      <div class="mkt-brand">
+        <img src="/assets/images/worktaskme-icon.svg" width="32" height="32" alt="" />
+        <span>WorkTaskMe</span>
+      </div>
+      <nav class="mkt-nav-links" aria-label="Primary">
+        <a href="#features" data-i18n="mkt_nav_features">Features</a>
+        <a href="#how" data-i18n="mkt_nav_how">How it works</a>
+        <a href="#pricing" data-i18n="mkt_nav_pricing">Pricing</a>
+      </nav>
+      <div class="mkt-nav-actions">
+        <div class="lang-toggle" data-lang-toggle>
+          <button type="button" data-set-lang="ar">AR</button>
+          <button type="button" data-set-lang="en">EN</button>
+        </div>
+        <button type="button" class="btn ghost" id="mktLoginBtn" data-i18n="sign_in">Sign in</button>
+        <button type="button" class="btn primary" id="mktCtaTop" data-i18n="get_started">Get started</button>
+      </div>
+    </header>
+
+    <div class="mkt-hero">
+      <div class="mkt-hero-inner">
+        <div class="eyebrow">WorkTaskMe · SaaS for shipping teams</div>
+        <h1 data-i18n="mkt_hero_title">Where Agile Management Meets Team Scheduling</h1>
+        <p class="lead" data-i18n="mkt_hero_lead">Jira-style boards and a TeamUp-style calendar in one workspace — plan sprints, assign owners, and hit every deadline together.</p>
+        <div class="mkt-cta">
+          <button type="button" class="btn primary" id="mktCtaMain" data-i18n="get_started">Get started</button>
+          <button type="button" class="btn ghost" id="mktCtaLogin" data-i18n="sign_in">Sign in</button>
+          <button type="button" class="btn ghost" id="mktWatchDemo" data-i18n="mkt_watch_demo">Watch demo</button>
+        </div>
+        <div class="mkt-stats">
+          <div><strong>Boards</strong><span data-i18n="mkt_stat1">Kanban, backlog &amp; sprint-ready issue tracking</span></div>
+          <div><strong>Calendar</strong><span data-i18n="mkt_stat2">Color-coded team schedules &amp; deadline sync</span></div>
+          <div><strong>Realtime</strong><span data-i18n="mkt_stat3">Live status updates &amp; notification hub</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mkt-product mkt-reveal" id="product">
+      <div class="mkt-product-shell">
+        <div class="mkt-float-badge a">WTM-18<span data-i18n="mkt_badge_moved">Moved to Review</span></div>
+        <div class="mkt-float-badge b">Live<span data-i18n="mkt_badge_live">3 teammates online</span></div>
+        <div class="mkt-product-frame">
+          <div class="mkt-product-top"><i></i><i></i><i></i></div>
+
+          <div class="mkt-panel on" data-panel="boards" id="mktPanelBoards">
+            <div class="mkt-board-mock">
+              <aside class="mkt-board-side">
+                <div class="logo-row">
+                  <img src="/assets/images/worktaskme-icon.svg" alt="" />
+                  <span>WorkTaskMe</span>
+                </div>
+                <div class="nav-item on">Board</div>
+                <div class="nav-item">Backlog</div>
+                <div class="nav-item">Calendar</div>
+                <div class="nav-item">Team</div>
+              </aside>
+              <div class="mkt-board-main">
+                <div class="mkt-col">
+                  <h4>To Do</h4>
+                  <div class="mkt-card-mock">Sprint planning<span class="chip">High</span></div>
+                  <div class="mkt-card-mock">Invite client viewer<span class="chip">Medium</span></div>
+                </div>
+                <div class="mkt-col">
+                  <h4>In Progress</h4>
+                  <div class="mkt-card-mock">Calendar resource sync<span class="chip">High</span></div>
+                  <div class="mkt-card-mock">Live board updates<span class="chip">Low</span></div>
+                </div>
+                <div class="mkt-col">
+                  <h4>Done</h4>
+                  <div class="mkt-card-mock">Workspace roles<span class="chip">Done</span></div>
+                  <div class="mkt-card-mock">OTP signup flow<span class="chip">Done</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mkt-panel" data-panel="calendar" id="mktPanelCalendar">
+            <div class="mkt-cal-grid" aria-hidden="true">
+              <div class="mkt-cal-day"><strong>Mon</strong><div class="mkt-cal-event">Standup</div></div>
+              <div class="mkt-cal-day"><strong>Tue</strong><div class="mkt-cal-event green">Design review</div></div>
+              <div class="mkt-cal-day"><strong>Wed</strong><div class="mkt-cal-event amber">Sprint demo</div></div>
+              <div class="mkt-cal-day"><strong>Thu</strong><div class="mkt-cal-event">Client sync</div><div class="mkt-cal-event green">QA buffer</div></div>
+              <div class="mkt-cal-day"><strong>Fri</strong><div class="mkt-cal-event">Retro</div></div>
+              <div class="mkt-cal-day"><strong>Sat</strong></div>
+              <div class="mkt-cal-day"><strong>Sun</strong></div>
+            </div>
+          </div>
+
+          <div class="mkt-panel" data-panel="workspaces" id="mktPanelWorkspaces">
+            <div class="mkt-ws-grid">
+              <div class="mkt-ws-card"><strong>Acme Delivery</strong><p style="margin:8px 0 0;color:#94A3B8;font-size:.82rem">12 members · isolated tenant</p><span class="role">Admin</span></div>
+              <div class="mkt-ws-card"><strong>Platform</strong><p style="margin:8px 0 0;color:#94A3B8;font-size:.82rem">Boards + calendar shared</p><span class="role">PM</span></div>
+              <div class="mkt-ws-card"><strong>Client Portal</strong><p style="margin:8px 0 0;color:#94A3B8;font-size:.82rem">Read-only viewers</p><span class="role">Viewer</span></div>
+            </div>
+          </div>
+
+          <div class="mkt-panel" data-panel="realtime" id="mktPanelRealtime">
+            <div class="mkt-rt-feed">
+              <div class="mkt-rt-item"><div class="mkt-rt-dot"></div><div><strong>WTM-15</strong> moved to In Progress · Demo User</div></div>
+              <div class="mkt-rt-item"><div class="mkt-rt-dot" style="background:#60A5FA;box-shadow:0 0 0 4px rgba(96,165,250,.2)"></div><div>New comment on <strong>Sprint planning</strong></div></div>
+              <div class="mkt-rt-item"><div class="mkt-rt-dot" style="background:#FBBF24;box-shadow:0 0 0 4px rgba(251,191,36,.2)"></div><div>Deadline synced · Team calendar Thu 14:00</div></div>
+              <div class="mkt-rt-item"><div class="mkt-rt-dot"></div><div>Invite accepted · viewer@acme.com</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mkt-pills" role="tablist" aria-label="Product previews">
+        <button type="button" class="mkt-pill on" role="tab" aria-selected="true" data-mkt-tab="boards" data-i18n="mkt_pill1">Agile boards</button>
+        <button type="button" class="mkt-pill" role="tab" aria-selected="false" data-mkt-tab="calendar" data-i18n="mkt_pill2">Team calendar</button>
+        <button type="button" class="mkt-pill" role="tab" aria-selected="false" data-mkt-tab="workspaces" data-i18n="mkt_pill3">Workspaces</button>
+        <button type="button" class="mkt-pill" role="tab" aria-selected="false" data-mkt-tab="realtime" data-i18n="mkt_pill4">Realtime collab</button>
+      </div>
+    </div>
+
+    <section class="mkt-section alt mkt-reveal" id="features">
+      <div class="mkt-section-inner">
+        <h2 data-i18n="mkt_features_title">Built for how modern teams ship</h2>
+        <p class="sub" data-i18n="mkt_features_sub">Agile execution and visual scheduling — without bouncing between five tools.</p>
+        <div class="mkt-grid mkt-grid-4">
+          <article class="mkt-feature">
+            <div class="tag" data-i18n="mkt_new">Core</div>
+            <div class="ico">▣</div>
+            <h3 data-i18n="mkt_f1_t">Jira-style Agile boards</h3>
+            <p data-i18n="mkt_f1_d">Kanban columns, backlog, sprint management, and issue tracking with priorities and story points.</p>
+          </article>
+          <article class="mkt-feature">
+            <div class="tag" data-i18n="mkt_new">Core</div>
+            <div class="ico">▦</div>
+            <h3 data-i18n="mkt_f2_t">TeamUp-style visual calendar</h3>
+            <p data-i18n="mkt_f2_d">Color-coded team schedules, resource allocation, and deadline sync beside your tasks.</p>
+          </article>
+          <article class="mkt-feature">
+            <div class="ico">◇</div>
+            <h3 data-i18n="mkt_f3_t">Centralized workspaces</h3>
+            <p data-i18n="mkt_f3_d">Multi-tenant isolation with Admin, PM, Member, and Viewer roles — invite by email, stay in control.</p>
+          </article>
+          <article class="mkt-feature">
+            <div class="ico">◎</div>
+            <h3 data-i18n="mkt_f4_t">Real-time collaboration</h3>
+            <p data-i18n="mkt_f4_d">Live task status updates and a notification hub so the whole crew stays aligned.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="mkt-section mkt-reveal" id="how">
+      <h2 data-i18n="mkt_how_title">How it works</h2>
+      <p class="sub" data-i18n="mkt_how_sub">Three steps from empty workspace to a team that ships on schedule.</p>
+      <div class="mkt-steps">
+        <article class="mkt-step">
+          <div class="num">1</div>
+          <h3 data-i18n="mkt_how1_t">Create a workspace</h3>
+          <p data-i18n="mkt_how1_d">Spin up your tenant in seconds — boards, backlog, and calendar ready to go.</p>
+        </article>
+        <article class="mkt-step">
+          <div class="num">2</div>
+          <h3 data-i18n="mkt_how2_t">Invite your team</h3>
+          <p data-i18n="mkt_how2_d">Send email invites with the right role so everyone has the access they need.</p>
+        </article>
+        <article class="mkt-step">
+          <div class="num">3</div>
+          <h3 data-i18n="mkt_how3_t">Organize tasks &amp; calendar</h3>
+          <p data-i18n="mkt_how3_d">Move cards across the board and lock deadlines on the shared team calendar.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mkt-section alt mkt-reveal" id="pricing">
+      <div class="mkt-section-inner" style="text-align:center">
+        <h2 data-i18n="mkt_pricing_title">Simple pricing to get started</h2>
+        <p class="sub" data-i18n="mkt_pricing_sub">Start free for your team. Upgrade when you scale — no surprise lock-ins.</p>
+        <div class="mkt-pricing-card">
+          <div class="mkt-price-label" data-i18n="mkt_pricing_plan">Team</div>
+          <div class="mkt-price"><span data-i18n="mkt_pricing_free">Free to start</span></div>
+          <p data-i18n="mkt_pricing_blurb">Unlimited personal boards in your workspace · Calendar · Invites · OTP-secured accounts</p>
+          <button type="button" class="btn primary" id="mktCtaPricing" data-i18n="get_started" style="width:auto;margin:16px auto 0;background:linear-gradient(135deg,#4F46E5,#6366F1);color:#fff;border:0;padding:12px 28px;border-radius:12px;box-shadow:0 14px 30px rgba(79,70,229,.3)">Get started</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="mkt-cta-band mkt-reveal">
+      <h2 data-i18n="mkt_cta_band_t">Ready to run projects and schedules in one place?</h2>
+      <button type="button" class="btn primary" id="mktCtaBottom" data-i18n="get_started">Get started</button>
+    </div>
+
+    <footer class="mkt-footer mkt-footer-rich">
+      <div class="mkt-footer-grid">
+        <div class="mkt-footer-brand">
+          <div class="mkt-brand" style="margin-bottom:10px">
+            <img src="/assets/images/worktaskme-icon.svg" width="28" height="28" alt="" />
+            <span>WorkTaskMe</span>
+          </div>
+          <p data-i18n="mkt_footer_tag">Agile boards + team calendar for shipping work together.</p>
+        </div>
+        <div>
+          <h4 data-i18n="mkt_foot_product">Product</h4>
+          <a href="#features" data-i18n="mkt_nav_features">Features</a>
+          <a href="#product" data-i18n="mkt_nav_product">Product</a>
+          <a href="#pricing" data-i18n="mkt_nav_pricing">Pricing</a>
+        </div>
+        <div>
+          <h4 data-i18n="mkt_foot_solutions">Solutions</h4>
+          <a href="#how" data-i18n="mkt_how1_t">Create a workspace</a>
+          <a href="#features" data-i18n="mkt_f1_t">Jira-style Agile boards</a>
+          <a href="#features" data-i18n="mkt_f2_t">TeamUp-style visual calendar</a>
+        </div>
+        <div>
+          <h4 data-i18n="mkt_foot_resources">Resources</h4>
+          <a href="#how" data-i18n="mkt_nav_how">How it works</a>
+          <button type="button" class="mkt-foot-btn" id="mktFootDemo" data-i18n="mkt_watch_demo">Watch demo</button>
+          <button type="button" class="mkt-foot-btn" id="mktFootSignIn" data-i18n="sign_in">Sign in</button>
+        </div>
+        <div>
+          <h4 data-i18n="mkt_foot_company">Company</h4>
+          <a href="https://lyomastech.com" target="_blank" rel="noopener">LyomaStech</a>
+          <a href="mailto:hello@lyomastech.com">Contact</a>
+        </div>
+      </div>
+      <div class="mkt-footer-bar">
+        <span data-i18n="copyright_powered">© 2026 WorkTaskMe. All rights reserved. Powered by lyomastech</span>
+      </div>
+    </footer>
+  </section>
+
+  <div id="mktDemoModal" class="mkt-demo-modal" aria-hidden="true">
+    <div class="mkt-demo-card" role="dialog" aria-modal="true" aria-labelledby="mktDemoTitle">
+      <div class="mkt-demo-head">
+        <strong id="mktDemoTitle" data-i18n="mkt_demo_title">WorkTaskMe product tour</strong>
+        <button type="button" id="mktDemoClose" aria-label="Close">×</button>
+      </div>
+      <div class="mkt-demo-body">
+        <div class="mkt-demo-stage" id="mktDemoStage">
+          <!--
+            WtmProductTourModal — HTML5 product showcase video
+            Swap the local MP4 below, or replace this <video> block with a
+            YouTube / Vimeo iframe embed if you prefer hosted streaming later.
+          -->
+          <video
+            id="mktDemoVideo"
+            class="mkt-demo-video"
+            controls
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="/assets/images/video_poster.jpg"
+          >
+            <!--
+              MEDIA SOURCE: /assets/videos/worktaskme_promo.mp4
+              Replace this path with another asset, CDN URL, or remove <video>
+              and embed YouTube/Vimeo iframe in #mktDemoStage instead.
+            -->
+            <source src="/assets/videos/worktaskme_promo.mp4" type="video/mp4" />
+            Your browser does not support HTML5 video. Please update your browser to watch the WorkTaskMe product tour.
+          </video>
+        </div>
+        <p style="margin:12px 0 0;color:#94A3B8;font-size:.9rem;line-height:1.5" data-i18n="mkt_demo_blurb">A fast product showreel of boards, calendar, workspaces, and live collaboration — the same flow your team uses after sign-in.</p>
+        <div class="mkt-demo-actions">
+          <button type="button" class="btn ghost" id="mktDemoScroll" data-i18n="mkt_demo_explore" style="background:rgba(255,255,255,.06);color:#E2E8F0;border:1px solid rgba(148,163,184,.25)">Explore showcase</button>
+          <button type="button" class="btn primary" id="mktDemoStart" data-i18n="get_started" style="background:linear-gradient(135deg,#4F46E5,#6366F1);color:#fff;border:0">Get started</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="authView" class="auth-wrap hidden">
     <div class="auth-toolbar">
       <div class="lang-toggle" data-lang-toggle>
         <button type="button" data-set-lang="ar">AR</button>
@@ -1055,6 +1853,7 @@
       <select id="themeAuth" class="theme-select" aria-label="Theme"></select>
     </div>
     <div class="auth-card fade-in">
+      <button type="button" class="auth-back-home" id="authBackHome" data-i18n="back_to_home">← Back to home</button>
       <div class="atl-logo" aria-label="WorkTaskMe">
         <img class="mark" src="/assets/images/worktaskme-icon.svg" width="36" height="36" alt="" />
         <span class="word">WorkTaskMe</span>
@@ -1081,6 +1880,27 @@
         <label for="password" data-i18n="password">Password</label>
         <input id="password" type="password" autocomplete="current-password" />
         <button type="button" class="btn atl-primary" id="loginBtn" data-i18n="sign_in">Sign in</button>
+        <button type="button" class="linkish" id="forgotFromPassword" style="margin-top:12px;display:block;width:100%;text-align:center" data-i18n="forgot_password">Forgot password?</button>
+      </div>
+
+      <!-- Forgot password: request link -->
+      <div id="forgotForm" class="hidden">
+        <button type="button" class="auth-step-back" id="backFromForgot" data-i18n="back">← Back</button>
+        <p class="muted" style="margin:0 0 12px;font-size:.85rem" data-i18n="forgot_hint">Enter your account email. We will send a reset link if it exists.</p>
+        <label data-i18n="email">Email</label>
+        <input id="forgotEmail" type="email" autocomplete="email" />
+        <button type="button" class="btn atl-primary" id="forgotBtn" data-i18n="send_reset_link">Send reset link</button>
+        <div id="forgotDebug" class="help-banner hidden" style="margin-top:8px"></div>
+      </div>
+
+      <!-- Reset password from email link -->
+      <div id="resetForm" class="hidden">
+        <p class="muted" style="margin:0 0 12px;font-size:.85rem" data-i18n="reset_hint">Choose a new password for your account.</p>
+        <label data-i18n="new_password">New password</label>
+        <input id="resetPass" type="password" autocomplete="new-password" />
+        <label data-i18n="confirm">Confirm</label>
+        <input id="resetPass2" type="password" autocomplete="new-password" />
+        <button type="button" class="btn atl-primary" id="resetBtn" data-i18n="save_new_password">Save new password</button>
       </div>
 
       <!-- Step 2b: register (new email) -->
@@ -1088,8 +1908,8 @@
         <button type="button" class="auth-step-back" id="backFromRegister" data-i18n="back">← Back</button>
         <div class="auth-email-chip" id="regEmailChip"></div>
         <p class="muted" style="margin:0 0 12px;font-size:.85rem" data-i18n="register_hint">Join with Google, Microsoft, or any email. We send an OTP to verify you.</p>
-        <label data-i18n="first_name">First name</label><input id="regFirst" autocomplete="given-name" />
-        <label data-i18n="last_name">Last name</label><input id="regLast" autocomplete="family-name" />
+        <label data-i18n="first_name">First name</label><input id="regFirst" type="text" autocomplete="given-name" />
+        <label data-i18n="last_name">Last name</label><input id="regLast" type="text" autocomplete="family-name" />
         <label data-i18n="email">Email</label><input id="regEmail" type="email" autocomplete="email" />
         <label data-i18n="password">Password</label><input id="regPass" type="password" autocomplete="new-password" />
         <label data-i18n="confirm">Confirm</label><input id="regPass2" type="password" autocomplete="new-password" />
@@ -1134,13 +1954,16 @@
         </div>
       </div>
 
-      <div class="auth-footer-links">
-        <button type="button" class="linkish" id="cantLoginLink" data-i18n="cant_login">Can't log in?</button>
+      <div class="auth-footer-links" id="authFooterLinks">
+        <button type="button" class="linkish" id="cantLoginLink" data-i18n="forgot_password">Forgot password?</button>
         <span class="dot">·</span>
         <button type="button" class="linkish" id="toRegister" data-i18n="create_account">Create an account</button>
       </div>
-      <div class="auth-subfoot" data-i18n="auth_subfoot">One account for boards, backlog, calendar and more.</div>
+      <div class="auth-subfoot" id="authSubfoot" data-i18n="auth_subfoot">One account for boards, backlog, calendar and more.</div>
       <div class="error" id="authError"></div>
+      <div class="auth-legal">
+        <span data-i18n="copyright_powered">© 2026 WorkTaskMe. All rights reserved. Powered by lyomastech</span>
+      </div>
     </div>
   </section>
 
@@ -1389,6 +2212,79 @@ const I18N = {
     continue_ar: "Continue",
     remember_me: "Remember me",
     back: "← Back",
+    back_to_home: "← Back to home",
+    get_started: "Get started",
+    powered_by: "Powered by",
+    copyright: "© 2026 WorkTaskMe. All rights reserved.",
+    copyright_powered: "© 2026 WorkTaskMe. All rights reserved. Powered by lyomastech",
+    mkt_nav_features: "Features",
+    mkt_nav_how: "How it works",
+    mkt_nav_pricing: "Pricing",
+    mkt_nav_product: "Product",
+    mkt_watch_demo: "Watch demo",
+    mkt_badge_moved: "Moved to Review",
+    mkt_badge_live: "3 teammates online",
+    mkt_demo_title: "WorkTaskMe product tour",
+    mkt_demo_blurb: "A fast product showreel of boards, calendar, workspaces, and live collaboration — the same flow your team uses after sign-in.",
+    mkt_demo_explore: "Explore showcase",
+    mkt_new: "Core",
+    mkt_stat1: "Kanban, backlog & sprint-ready issue tracking",
+    mkt_stat2: "Color-coded team schedules & deadline sync",
+    mkt_stat3: "Live status updates & notification hub",
+    mkt_pill1: "Agile boards",
+    mkt_pill2: "Team calendar",
+    mkt_pill3: "Workspaces",
+    mkt_pill4: "Realtime collab",
+    mkt_hero_title: "Where Agile Management Meets Team Scheduling",
+    mkt_hero_lead: "Jira-style boards and a TeamUp-style calendar in one workspace — plan sprints, assign owners, and hit every deadline together.",
+    mkt_features_title: "Built for how modern teams ship",
+    mkt_features_sub: "Agile execution and visual scheduling — without bouncing between five tools.",
+    mkt_f1_t: "Jira-style Agile boards",
+    mkt_f1_d: "Kanban columns, backlog, sprint management, and issue tracking with priorities and story points.",
+    mkt_f2_t: "TeamUp-style visual calendar",
+    mkt_f2_d: "Color-coded team schedules, resource allocation, and deadline sync beside your tasks.",
+    mkt_f3_t: "Centralized workspaces",
+    mkt_f3_d: "Multi-tenant isolation with Admin, PM, Member, and Viewer roles — invite by email, stay in control.",
+    mkt_f4_t: "Real-time collaboration",
+    mkt_f4_d: "Live task status updates and a notification hub so the whole crew stays aligned.",
+    mkt_how_title: "How it works",
+    mkt_how_sub: "Three steps from empty workspace to a team that ships on schedule.",
+    mkt_how1_t: "Create a workspace",
+    mkt_how1_d: "Spin up your tenant in seconds — boards, backlog, and calendar ready to go.",
+    mkt_how2_t: "Invite your team",
+    mkt_how2_d: "Send email invites with the right role so everyone has the access they need.",
+    mkt_how3_t: "Organize tasks & calendar",
+    mkt_how3_d: "Move cards across the board and lock deadlines on the shared team calendar.",
+    mkt_pricing_title: "Simple pricing to get started",
+    mkt_pricing_sub: "Start free for your team. Upgrade when you scale — no surprise lock-ins.",
+    mkt_pricing_plan: "Team",
+    mkt_pricing_free: "Free to start",
+    mkt_pricing_blurb: "Unlimited personal boards in your workspace · Calendar · Invites · OTP-secured accounts",
+    mkt_cta_band_t: "Ready to run projects and schedules in one place?",
+    mkt_footer_tag: "Agile boards + team calendar for shipping work together.",
+    mkt_foot_product: "Product",
+    mkt_foot_solutions: "Solutions",
+    mkt_foot_resources: "Resources",
+    mkt_foot_company: "Company",
+    mkt_ideas_title: "Ideas your team can run on day one",
+    mkt_ideas_sub: "Start with a workspace, add a project, then turn conversations into tracked work.",
+    mkt_i1_t: "Product launches",
+    mkt_i1_d: "Checklist every asset, owner, and go-live date on one board.",
+    mkt_i2_t: "Client delivery",
+    mkt_i2_d: "Share progress with viewers while members ship the work.",
+    mkt_i3_t: "Ops & support",
+    mkt_i3_d: "Triage incoming requests, assign owners, close the loop.",
+    mkt_f5_t: "Attachments & OTP security",
+    mkt_f5_d: "Drop images on tasks. New accounts verify by email OTP before anyone gets in.",
+    mkt_f6_t: "Arabic + English",
+    mkt_f6_d: "Work in the language your team prefers, with RTL support when you need it.",
+    forgot_password: "Forgot password?",
+    forgot_hint: "Enter your account email. We will send a reset link if it exists.",
+    send_reset_link: "Send reset link",
+    reset_sent: "If that email has an account, a reset link is on the way.",
+    reset_hint: "Choose a new password for your account.",
+    save_new_password: "Save new password",
+    password_reset_ok: "Password updated — you can sign in now.",
     or_continue_with: "Or continue with:",
     auth_subfoot: "One account for boards, backlog, calendar and more.",
     use_sso_hint: "This account uses Google or Microsoft. Continue with a social button below, or set a password after signing in.",
@@ -1504,6 +2400,7 @@ const I18N = {
     no_description: "No description",
     backlog_empty: "Backlog empty",
     task_moved: "Task moved",
+    task_not_found: "Request not found",
     viewer_readonly: "Viewer role: read-only",
     edit_task: "Edit {key}",
     title: "Title",
@@ -1612,6 +2509,79 @@ const I18N = {
     continue_ar: "متابعة",
     remember_me: "تذكرني",
     back: "→ رجوع",
+    back_to_home: "→ العودة للرئيسية",
+    get_started: "ابدأ الآن",
+    powered_by: "بدعم من",
+    copyright: "© 2026 WorkTaskMe. جميع الحقوق محفوظة.",
+    copyright_powered: "© 2026 WorkTaskMe. جميع الحقوق محفوظة. Powered by lyomastech",
+    mkt_nav_features: "الميزات",
+    mkt_nav_how: "كيف يعمل",
+    mkt_nav_pricing: "الأسعار",
+    mkt_nav_product: "المنتج",
+    mkt_watch_demo: "شاهد العرض",
+    mkt_badge_moved: "انتقلت إلى Review",
+    mkt_badge_live: "3 زملاء متصلين",
+    mkt_demo_title: "جولة في منتج WorkTaskMe",
+    mkt_demo_blurb: "عرض سريع للمنتج: لوحات، تقويم، مساحات عمل، وتعاون لحظي — نفس تجربة فريقك بعد تسجيل الدخول.",
+    mkt_demo_explore: "استكشف المعاينة",
+    mkt_new: "أساسي",
+    mkt_stat1: "كانبان وباكلوج وتتبع المهام للسبرنت",
+    mkt_stat2: "جداول فريق ملوّنة ومزامنة المواعيد",
+    mkt_stat3: "تحديثات مباشرة ومركز إشعارات",
+    mkt_pill1: "لوحات أجايل",
+    mkt_pill2: "تقويم الفريق",
+    mkt_pill3: "مساحات العمل",
+    mkt_pill4: "تعاون لحظي",
+    mkt_hero_title: "حيث تلتقي إدارة الأجايل بجدولة الفريق",
+    mkt_hero_lead: "لوحات بأسلوب Jira وتقويم بأسلوب TeamUp في مساحة واحدة — خطط السبرنت، عيّن المسؤولين، وحقّق المواعيد معًا.",
+    mkt_features_title: "مصمّم لطريقة فرق اليوم في التسليم",
+    mkt_features_sub: "تنفيذ أجايل وجدولة بصرية — من غير ما تتنقّل بين خمس أدوات.",
+    mkt_f1_t: "لوحات أجايل بأسلوب Jira",
+    mkt_f1_d: "أعمدة كانبان، باكلوج، إدارة سبرنت، وتتبع المهام مع الأولوية والنقاط.",
+    mkt_f2_t: "تقويم بصري بأسلوب TeamUp",
+    mkt_f2_d: "جداول فريق ملوّنة، توزيع موارد، ومزامنة المواعيد بجانب المهام.",
+    mkt_f3_t: "مساحات عمل مركزية",
+    mkt_f3_d: "عزل متعدد المستأجرين مع أدوار مسؤول ومدير مشروع وعضو ومشاهد — دعوات بالإيميل.",
+    mkt_f4_t: "تعاون لحظي",
+    mkt_f4_d: "تحديثات حالة مباشرة ومركز إشعارات يخلي الفريق متزامن.",
+    mkt_how_title: "كيف يعمل",
+    mkt_how_sub: "ثلاث خطوات من مساحة فاضية لفريق يسلّم في الميعاد.",
+    mkt_how1_t: "أنشئ مساحة عمل",
+    mkt_how1_d: "ابدأ خلال ثوانٍ — لوحات وباكلوج وتقويم جاهزين.",
+    mkt_how2_t: "ادعُ فريقك",
+    mkt_how2_d: "أرسل دعوات بالإيميل مع الدور المناسب لكل شخص.",
+    mkt_how3_t: "نظّم المهام والتقويم",
+    mkt_how3_d: "حرّك البطاقات على اللوحة وثبّت المواعيد على تقويم الفريق.",
+    mkt_pricing_title: "تسعير بسيط للبداية",
+    mkt_pricing_sub: "ابدأ مجانًا لفريقك. رقِّ عندما تكبر — من غير قفل مفاجئ.",
+    mkt_pricing_plan: "Team",
+    mkt_pricing_free: "مجاني للبداية",
+    mkt_pricing_blurb: "لوحات غير محدودة في مساحتك · تقويم · دعوات · حسابات محمية بـ OTP",
+    mkt_cta_band_t: "جاهز تدير المشاريع والجداول من مكان واحد؟",
+    mkt_footer_tag: "لوحات أجايل + تقويم فريق لتسليم العمل معًا.",
+    mkt_foot_product: "المنتج",
+    mkt_foot_solutions: "الحلول",
+    mkt_foot_resources: "الموارد",
+    mkt_foot_company: "الشركة",
+    mkt_ideas_title: "أفكار تقدر تبدأ بها من اليوم الأول",
+    mkt_ideas_sub: "أنشئ مساحة عمل، أضف مشروعًا، وحوّل النقاشات إلى عمل متتبَّع.",
+    mkt_i1_t: "إطلاق المنتجات",
+    mkt_i1_d: "قائمة بكل الأصول والمسؤولين وموعد الإطلاق على لوحة واحدة.",
+    mkt_i2_t: "تسليم العملاء",
+    mkt_i2_d: "شارك التقدّم مع المشاهدين بينما الأعضاء ينفّذون العمل.",
+    mkt_i3_t: "التشغيل والدعم",
+    mkt_i3_d: "صنّف الطلبات الواردة، عيّن المسؤولين، وأغلق الحلقة.",
+    mkt_f5_t: "مرفقات وأمان OTP",
+    mkt_f5_d: "أرفق صورًا على المهام. الحسابات الجديدة تتحقق برمز OTP قبل الدخول.",
+    mkt_f6_t: "عربي + إنجليزي",
+    mkt_f6_d: "اشتغل بلغة فريقك، مع دعم الاتجاه من اليمين لليسار.",
+    forgot_password: "نسيت كلمة السر؟",
+    forgot_hint: "أدخل إيميل حسابك. سنرسل رابط إعادة التعيين إن وُجد الحساب.",
+    send_reset_link: "إرسال رابط إعادة التعيين",
+    reset_sent: "إذا كان الإيميل مسجّلًا، رابط إعادة التعيين في الطريق.",
+    reset_hint: "اختر كلمة مرور جديدة لحسابك.",
+    save_new_password: "حفظ كلمة المرور الجديدة",
+    password_reset_ok: "تم تحديث كلمة المرور — يمكنك تسجيل الدخول الآن.",
     or_continue_with: "أو تابع باستخدام:",
     auth_subfoot: "حساب واحد للوحات والمهام والتقويم والمزيد.",
     use_sso_hint: "هذا الحساب يستخدم جوجل أو مايكروسوفت. تابع بزر اجتماعي أدناه، أو عيّن كلمة مرور بعد الدخول.",
@@ -1727,6 +2697,7 @@ const I18N = {
     no_description: "بدون وصف",
     backlog_empty: "قائمة الانتظار فارغة",
     task_moved: "تم نقل المهمة",
+    task_not_found: "الطلب غير موجود",
     viewer_readonly: "دور المشاهد: قراءة فقط",
     edit_task: "تعديل {key}",
     title: "العنوان",
@@ -2022,8 +2993,16 @@ function clearAuth() {
   ["wtm_access","wtm_refresh","wtm_ws","wtm_ws_name","wtm_role"].forEach((k) => localStorage.removeItem(k));
 }
 function show(view) {
-  ["authView","wsView","appView"].forEach((id) => $(id).classList.add("hidden"));
-  $(view).classList.remove("hidden");
+  ["marketingView","authView","wsView","appView"].forEach((id) => $(id)?.classList.add("hidden"));
+  $(view)?.classList.remove("hidden");
+  const light = view === "marketingView" || view === "authView" || view === "wsView";
+  document.body.classList.toggle("surface-light", light);
+  if (light) {
+    window.scrollTo(0, 0);
+  }
+  if (view === "marketingView" || view === "authView") {
+    try { applyLang(state.lang); } catch { /* ignore */ }
+  }
 }
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
@@ -2168,7 +3147,7 @@ function renderInviteBanner() {
 }
 
 function hideAuthSteps() {
-  ["emailStep", "passwordStep", "registerForm", "otpForm"].forEach((id) => {
+  ["emailStep", "passwordStep", "registerForm", "otpForm", "forgotForm", "resetForm"].forEach((id) => {
     $(id)?.classList.add("hidden");
   });
 }
@@ -2180,18 +3159,107 @@ function showAuthStep(step) {
     password: "passwordStep",
     register: "registerForm",
     otp: "otpForm",
+    forgot: "forgotForm",
+    reset: "resetForm",
   };
   const el = $(map[step] || "emailStep");
   el?.classList.remove("hidden");
-  $("socialBlock")?.classList.toggle("hidden", step === "otp");
+  const hideSocial = step === "otp" || step === "forgot" || step === "reset";
+  const hideFooter = step === "otp" || step === "forgot" || step === "reset" || step === "password" || step === "register";
+  $("socialBlock")?.classList.toggle("hidden", hideSocial);
+  $("authFooterLinks")?.classList.toggle("hidden", hideFooter);
+  $("authSubfoot")?.classList.toggle("hidden", step === "forgot" || step === "reset");
+  // Social login first on register (cleaner UX)
+  const social = $("socialBlock");
+  const reg = $("registerForm");
+  if (social && reg && step === "register") {
+    reg.parentNode.insertBefore(social, reg);
+  } else if (social && $("emailStep") && (step === "email" || step === "password")) {
+    const footer = $("authFooterLinks");
+    if (footer) footer.parentNode.insertBefore(social, footer);
+  }
+  if (step === "forgot" || step === "reset") {
+    $("inviteBanner")?.classList.add("hidden");
+  } else {
+    renderInviteBanner();
+  }
   const title = $("authTitle");
   if (title) {
     if (step === "register") title.setAttribute("data-i18n", "create_account");
     else if (step === "otp") title.setAttribute("data-i18n", "otp_title");
+    else if (step === "forgot") title.setAttribute("data-i18n", "forgot_password");
+    else if (step === "reset") title.setAttribute("data-i18n", "save_new_password");
     else title.setAttribute("data-i18n", "login_continue");
     title.textContent = t(title.getAttribute("data-i18n"));
   }
   $("authError").textContent = "";
+}
+
+function openAuth(opts = {}) {
+  show("authView");
+  if (opts.resetToken) {
+    state.resetToken = opts.resetToken;
+    showAuthStep("reset");
+    return;
+  }
+  if (opts.register) {
+    goRegisterStep(($("email")?.value || "").trim());
+    return;
+  }
+  if (opts.forgot) {
+    showAuthStep("forgot");
+    $("forgotEmail").value = ($("email")?.value || "").trim();
+    return;
+  }
+  goEmailStep();
+}
+
+function goMarketing() {
+  show("marketingView");
+  // Keep the public homepage URL clean (landing first on domain `/`)
+  const u = new URL(location.href);
+  let dirty = false;
+  ["reset", "token", "login", "register", "tab", "project", "app", "open"].forEach((k) => {
+    if (u.searchParams.has(k)) {
+      u.searchParams.delete(k);
+      dirty = true;
+    }
+  });
+  if (/\/reset-password\/?$/i.test(u.pathname)) {
+    u.pathname = "/";
+    dirty = true;
+  }
+  if (dirty) history.replaceState({}, "", u.pathname + (u.search || "") + u.hash);
+}
+
+async function enterAppFromSession() {
+  if (state.access && state.workspaceId) {
+    $("wsName").textContent = state.workspaceName;
+    $("myRoleChip").textContent = roleLabel(state.myRole) || state.myRole || "";
+    show("appView");
+    await maybeAcceptInvite();
+    await loadProjects();
+    await Promise.all([loadStats(), loadBoard(), loadBacklog(), loadCalendar(), loadMembers(), loadNotifications()]);
+    switchTab(readRoute().tab);
+    return true;
+  }
+  if (state.access) {
+    await maybeAcceptInvite();
+    await loadWorkspaces();
+    return true;
+  }
+  return false;
+}
+
+/** Sign in CTA: resume session into the app, otherwise open auth. */
+async function openAuthOrApp(opts = {}) {
+  try {
+    if (await enterAppFromSession()) return;
+  } catch (e) {
+    toast(e.message || t("connection_failed"));
+    clearAuth();
+  }
+  openAuth(opts);
 }
 
 function goEmailStep() {
@@ -2222,7 +3290,160 @@ $("toRegister").onclick = () => {
 $("backFromPassword").onclick = goEmailStep;
 $("backFromRegister").onclick = goEmailStep;
 $("otpToLogin").onclick = goEmailStep;
-$("cantLoginLink").onclick = () => toast(t("cant_login_help"));
+$("authBackHome").onclick = goMarketing;
+$("cantLoginLink").onclick = () => openAuth({ forgot: true });
+$("forgotFromPassword").onclick = () => openAuth({ forgot: true });
+$("backFromForgot").onclick = goEmailStep;
+
+["mktLoginBtn", "mktCtaLogin", "mktFootSignIn"].forEach((id) => {
+  $(id)?.addEventListener("click", () => {
+    openAuthOrApp();
+  });
+});
+["mktCtaTop", "mktCtaMain", "mktCtaBottom", "mktCtaPricing"].forEach((id) => {
+  $(id)?.addEventListener("click", () => {
+    openAuthOrApp({ register: true });
+  });
+});
+
+function setMktShowcaseTab(tab) {
+  const key = tab || "boards";
+  document.querySelectorAll(".mkt-pill").forEach((p) => {
+    const on = p.getAttribute("data-mkt-tab") === key;
+    p.classList.toggle("on", on);
+    p.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  document.querySelectorAll(".mkt-panel").forEach((panel) => {
+    panel.classList.toggle("on", panel.getAttribute("data-panel") === key);
+  });
+}
+
+document.querySelectorAll(".mkt-pill[data-mkt-tab]").forEach((pill) => {
+  pill.addEventListener("click", () => setMktShowcaseTab(pill.getAttribute("data-mkt-tab")));
+});
+
+function openMktDemo() {
+  const modal = $("mktDemoModal");
+  if (!modal) return;
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  const video = $("mktDemoVideo");
+  if (video) {
+    try {
+      video.muted = true;
+      video.currentTime = 0;
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => { /* autoplay may be blocked; controls remain */ });
+      }
+    } catch { /* ignore */ }
+  }
+}
+function closeMktDemo() {
+  const modal = $("mktDemoModal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  const video = $("mktDemoVideo");
+  if (video) {
+    try { video.pause(); } catch { /* ignore */ }
+  }
+}
+["mktWatchDemo", "mktFootDemo"].forEach((id) => {
+  $(id)?.addEventListener("click", (e) => {
+    e.preventDefault();
+    openMktDemo();
+  });
+});
+$("mktDemoClose")?.addEventListener("click", closeMktDemo);
+$("mktDemoModal")?.addEventListener("click", (e) => {
+  if (e.target === $("mktDemoModal")) closeMktDemo();
+});
+$("mktDemoScroll")?.addEventListener("click", () => {
+  closeMktDemo();
+  $("product")?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+$("mktDemoStart")?.addEventListener("click", () => {
+  closeMktDemo();
+  openAuth({ register: true });
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeMktDemo();
+});
+
+(function initMktReveal() {
+  const nodes = document.querySelectorAll(".mkt-reveal");
+  if (!nodes.length) return;
+  if (!("IntersectionObserver" in window)) {
+    nodes.forEach((n) => n.classList.add("in"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.classList.add("in");
+          io.unobserve(en.target);
+        }
+      });
+    },
+    { threshold: 0.14, rootMargin: "0px 0px -40px 0px" }
+  );
+  nodes.forEach((n) => io.observe(n));
+})();
+
+setMktShowcaseTab("boards");
+
+$("forgotBtn").onclick = async () => {
+  $("authError").textContent = "";
+  const email = ($("forgotEmail").value || "").trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    $("authError").textContent = t("email");
+    return;
+  }
+  try {
+    const res = await api("/api/auth/password-reset/", {
+      method: "POST",
+      workspace: false,
+      body: { email },
+    });
+    toast(t("reset_sent"));
+    const dbg = $("forgotDebug");
+    if (res.reset_debug) {
+      dbg.classList.remove("hidden");
+      dbg.textContent = `DEBUG reset link token: ${res.reset_debug}`;
+    } else {
+      dbg.classList.add("hidden");
+    }
+  } catch (e) {
+    $("authError").textContent = e.message;
+  }
+};
+
+$("resetBtn").onclick = async () => {
+  $("authError").textContent = "";
+  const token = state.resetToken || new URLSearchParams(location.search).get("reset") || "";
+  if (!token) {
+    $("authError").textContent = t("forgot_password");
+    return;
+  }
+  try {
+    await api("/api/auth/password-reset/confirm/", {
+      method: "POST",
+      workspace: false,
+      body: {
+        token,
+        new_password: $("resetPass").value,
+        new_password_confirm: $("resetPass2").value,
+      },
+    });
+    toast(t("password_reset_ok"));
+    state.resetToken = "";
+    goEmailStep();
+  } catch (e) {
+    $("authError").textContent = e.message;
+  }
+};
 
 function showOtpForm(email, otpDebug) {
   showAuthStep("otp");
@@ -2698,7 +3919,7 @@ $("createWsBtn").onclick = () => openModal({
   },
 });
 
-function logout() { clearAuth(); show("authView"); renderInviteBanner(); }
+function logout() { clearAuth(); goMarketing(); renderInviteBanner(); }
 $("logoutWs").onclick = logout;
 $("logoutApp").onclick = logout;
 $("switchWs").onclick = () => loadWorkspaces();
@@ -3042,6 +4263,63 @@ function applyBoardFilters() {
     const countEl = col.querySelector(".col-count");
     if (countEl) countEl.textContent = String(visible);
   });
+}
+
+/** Parse "15", "WTM-15", "wtm-15" → { keyHint, number } */
+function parseIssueSearchQuery(q) {
+  const raw = String(q || "").trim();
+  if (!raw) return null;
+  const m = raw.match(/^([A-Za-z][A-Za-z0-9]*)[-\s]?(\d+)$/) || raw.match(/^(\d+)$/);
+  if (!m) return null;
+  if (m.length === 2) {
+    return { prefix: "", number: Number(m[1]), raw };
+  }
+  return { prefix: String(m[1] || "").toUpperCase(), number: Number(m[2]), raw };
+}
+
+async function openTaskFromIssueSearch(q) {
+  const parsed = parseIssueSearchQuery(q);
+  if (!parsed) {
+    applyBoardFilters();
+    return;
+  }
+  const projectKey = String(state.board?.project?.key || $("projectSelect")?.selectedOptions?.[0]?.textContent?.split("—")[0]?.trim() || "WTM").toUpperCase();
+  const wantKey = parsed.prefix
+    ? `${parsed.prefix}-${parsed.number}`
+    : `${projectKey}-${parsed.number}`;
+  const pool = [...(state.board?.tasks || []), ...(Array.isArray(state.backlog) ? state.backlog : [])];
+  let found = pool.find((t) => String(t.issue_key || "").toUpperCase() === wantKey);
+  if (!found && !parsed.prefix) {
+    found = pool.find((t) => {
+      const key = String(t.issue_key || "");
+      const n = key.split("-").pop();
+      return String(n) === String(parsed.number);
+    });
+  }
+  if (!found) {
+    try {
+      const projectId = $("projectSelect")?.value || state.board?.project?.id || "";
+      const qs = new URLSearchParams({ search: wantKey });
+      if (projectId) qs.set("project", projectId);
+      const data = await api(`/api/tasks/?${qs.toString()}`);
+      const list = Array.isArray(data) ? data : (data.results || []);
+      found = list.find((t) => String(t.issue_key || "").toUpperCase() === wantKey)
+        || list.find((t) => String(t.issue_key || "").toUpperCase().endsWith(`-${parsed.number}`))
+        || list[0];
+    } catch (err) {
+      toast(err.message);
+      return;
+    }
+  }
+  if (!found?.id) {
+    toast(t("task_not_found"));
+    return;
+  }
+  try {
+    await openTaskEditor(found.id);
+  } catch (err) {
+    toast(err.message);
+  }
 }
 
 async function reorderColumnsDrop(dragId, targetId) {
@@ -4060,12 +5338,22 @@ $("boardSearch").oninput = () => {
   if ($("boardAssigneeSearch")) $("boardAssigneeSearch").value = $("boardSearch").value;
   applyBoardFilters();
 };
+$("boardSearch").addEventListener("keydown", async (e) => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  await openTaskFromIssueSearch($("boardSearch").value);
+});
 if ($("boardAssigneeSearch")) {
   $("boardAssigneeSearch").oninput = () => {
     state.filterQuery = ($("boardAssigneeSearch").value || "").trim().toLowerCase();
     if ($("boardSearch")) $("boardSearch").value = $("boardAssigneeSearch").value;
     applyBoardFilters();
   };
+  $("boardAssigneeSearch").addEventListener("keydown", async (e) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    await openTaskFromIssueSearch($("boardAssigneeSearch").value);
+  });
 }
 if ($("clearBoardFilters")) {
   $("clearBoardFilters").onclick = () => {
@@ -4399,27 +5687,43 @@ applyLang(state.lang);
   if (state.pendingInvite) localStorage.setItem("wtm_pending_invite", state.pendingInvite);
   const healthy = await checkApiHealth();
   if (!healthy && $("authError")) $("authError").textContent = t("connection_failed");
-  if (state.access && state.workspaceId) {
+
+  const params = new URLSearchParams(location.search);
+  const resetTok = params.get("token") || params.get("reset");
+  const isResetPath = /\/reset-password\/?$/i.test(location.pathname);
+
+  // Auth / invite deep-links
+  if (resetTok || isResetPath) {
+    if (resetTok) openAuth({ resetToken: resetTok });
+    else openAuth({ forgot: true });
+    return;
+  }
+  if (params.get("login") === "1" || params.get("invite") || state.pendingInvite) {
+    openAuth();
+    return;
+  }
+  if (params.get("register") === "1") {
+    openAuth({ register: true });
+    return;
+  }
+
+  // Resume the app when already in-app (tab/project) or ?app=1 — not on bare `/`
+  const wantApp =
+    params.get("app") === "1" ||
+    params.get("open") === "app" ||
+    params.has("tab") ||
+    params.has("project");
+  if (wantApp && state.access) {
     try {
-      $("wsName").textContent = state.workspaceName;
-      $("myRoleChip").textContent = roleLabel(state.myRole) || state.myRole || "";
-      show("appView");
-      await maybeAcceptInvite();
-      await loadProjects();
-      await Promise.all([loadStats(), loadBoard(), loadBacklog(), loadCalendar(), loadMembers(), loadNotifications()]);
-      // Restore the page the user was on (Board / Backlog / …) after refresh
-      switchTab(readRoute().tab);
-      return;
+      if (await enterAppFromSession()) return;
     } catch (e) {
       toast(e.message || t("connection_failed"));
       clearAuth();
     }
   }
-  if (state.access) {
-    try { await maybeAcceptInvite(); await loadWorkspaces(); return; }
-    catch (e) { toast(e.message || t("connection_failed")); clearAuth(); }
-  }
-  show("authView");
+
+  // Domain homepage `/` → marketing landing
+  goMarketing();
 })();
 </script>
 </body>

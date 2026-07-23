@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.45" stop-color="#1E1B4B"/>
+      <stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="200" y1="120" x2="1080" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#10B981" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="980" cy="160" r="220" fill="url(#accent)"/>
+  <circle cx="260" cy="560" r="180" fill="#6366F1" fill-opacity="0.18"/>
+  <rect x="160" y="150" width="960" height="420" rx="28" fill="#0B1220" stroke="#64748B" stroke-opacity="0.35" stroke-width="2"/>
+  <rect x="200" y="200" width="220" height="320" rx="18" fill="#1E293B"/>
+  <rect x="450" y="200" width="300" height="140" rx="16" fill="#334155"/>
+  <rect x="780" y="200" width="300" height="140" rx="16" fill="#334155"/>
+  <rect x="450" y="370" width="300" height="150" rx="16" fill="#334155"/>
+  <rect x="780" y="370" width="300" height="150" rx="16" fill="#334155"/>
+  <circle cx="640" cy="360" r="54" fill="#4F46E5"/>
+  <path d="M622 360 L658 340 L658 380 Z" fill="white"/>
+  <text x="640" y="620" text-anchor="middle" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">WorkTaskMe product tour</text>
+  <text x="640" y="656" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="16">Boards · Calendar · Workspaces · Realtime</text>
+</svg>

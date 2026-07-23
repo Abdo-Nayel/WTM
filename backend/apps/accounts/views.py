@@ -9,6 +9,8 @@ from apps.accounts.captcha import captcha_config
 from apps.accounts.serializers import (
     FCMTokenSerializer,
     MeSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
     RegisterSerializer,
     ResendOTPSerializer,
     SetPasswordSerializer,
@@ -253,6 +255,32 @@ class RegisterFCMTokenView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": "FCM token registered."}, status=status.HTTP_200_OK)
+
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        ser = PasswordResetRequestSerializer(data=request.data, context={"request": request})
+        ser.is_valid(raise_exception=True)
+        result = ser.save()
+        payload = {
+            "detail": "If an account exists for that email, we sent a reset link.",
+            "email": result.get("email"),
+        }
+        if settings.DEBUG and result.get("reset_debug"):
+            payload["reset_debug"] = result["reset_debug"]
+        return Response(payload, status=status.HTTP_200_OK)
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        ser = PasswordResetConfirmSerializer(data=request.data, context={"request": request})
+        ser.is_valid(raise_exception=True)
+        data = ser.save()
+        return Response(data, status=status.HTTP_200_OK)
 
 
 LoginView = TokenObtainPairView

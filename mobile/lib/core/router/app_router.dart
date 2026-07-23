@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/backlog/backlog_screen.dart';
@@ -37,7 +38,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       if (auth.status == AuthStatus.unknown) return null;
 
-      final isAuthRoute = loc == '/login' || loc == '/register';
+      final isAuthRoute =
+          loc == '/login' || loc == '/register' || loc == '/forgot-password';
       final isWorkspaceRoute = loc == '/workspaces';
 
       if (auth.status == AuthStatus.unauthenticated) {
@@ -67,6 +69,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
         path: '/workspaces',

@@ -8,6 +8,8 @@ class ApiConfig {
   static const String authToken = '/api/auth/token/';
   static const String authRefresh = '/api/auth/token/refresh/';
   static const String authMe = '/api/auth/me/';
+  static const String authPasswordReset = '/api/auth/password-reset/';
+  static const String authPasswordResetConfirm = '/api/auth/password-reset/confirm/';
 
   static const String workspaces = '/api/workspaces/';
   static const String projects = '/api/projects/';
