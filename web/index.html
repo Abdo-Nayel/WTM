@@ -4,6 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WorkTaskMe</title>
+  <script>
+    /* Hide marketing flash before first paint when resuming the app */
+    (function () {
+      try {
+        var p = new URLSearchParams(location.search);
+        var access = localStorage.getItem("wtm_access");
+        var ws = localStorage.getItem("wtm_ws");
+        var wantApp =
+          p.get("app") === "1" ||
+          p.get("open") === "app" ||
+          p.has("tab") ||
+          p.has("project");
+        var authish =
+          p.get("login") === "1" ||
+          p.get("invite") ||
+          p.get("register") === "1" ||
+          /\/reset-password\/?$/i.test(location.pathname) ||
+          p.get("token") ||
+          p.get("reset");
+        var boot = "marketing";
+        if (authish) boot = "auth";
+        else if (wantApp && access && ws) boot = "app";
+        else if (wantApp && access) boot = "ws";
+        document.documentElement.setAttribute("data-boot", boot);
+      } catch (e) {
+        document.documentElement.setAttribute("data-boot", "marketing");
+      }
+    })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/assets/images/worktaskme-icon.svg" />
   <link rel="apple-touch-icon" href="/assets/images/worktaskme-icon.png" />
   <meta name="theme-color" content="#4F46E5" />
@@ -123,6 +152,26 @@
     html[dir="rtl"] body { font-family: "Noto Sans Arabic", "DM Sans", system-ui, sans-serif; }
     button, input, select, textarea { font: inherit; color: inherit; }
     .hidden { display: none !important; }
+    /* First-paint boot: avoid marketing flash on app reload */
+    html[data-boot="app"] #marketingView,
+    html[data-boot="auth"] #marketingView,
+    html[data-boot="ws"] #marketingView { display: none !important; }
+    html[data-boot="app"] #appView.shell {
+      display: grid !important;
+    }
+    html[data-boot="ws"] #wsView.auth-wrap,
+    html[data-boot="auth"] #authView.auth-wrap {
+      display: flex !important;
+    }
+    html[data-boot="app"] body,
+    html[data-boot="ws"] body,
+    html[data-boot="auth"] body {
+      background: var(--bg, #161a1d);
+    }
+    html[data-boot="ws"] body,
+    html[data-boot="auth"] body {
+      background: #fff;
+    }
     .brand { font-family: "DM Sans", "Noto Sans Arabic", system-ui, sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; }
     .brand span { color: var(--teal); }
     .fade-in { animation: fadeUp .45s ease both; }
@@ -3065,6 +3114,13 @@ function clearAuth() {
 function show(view) {
   ["marketingView","authView","wsView","appView"].forEach((id) => $(id)?.classList.add("hidden"));
   $(view)?.classList.remove("hidden");
+  const bootMap = {
+    marketingView: "marketing",
+    authView: "auth",
+    wsView: "ws",
+    appView: "app",
+  };
+  document.documentElement.setAttribute("data-boot", bootMap[view] || "marketing");
   const light = view === "marketingView" || view === "authView" || view === "wsView";
   document.body.classList.toggle("surface-light", light);
   if (light) {
@@ -5808,35 +5864,42 @@ function openModal({ title, fields, onSubmit, extraButtons = [], afterRender, sa
 applyLang(state.lang);
 
 (async () => {
-  renderInviteBanner();
-  if (state.pendingInvite) localStorage.setItem("wtm_pending_invite", state.pendingInvite);
-  const healthy = await checkApiHealth();
-  if (!healthy && $("authError")) $("authError").textContent = t("connection_failed");
-
   const params = new URLSearchParams(location.search);
   const resetTok = params.get("token") || params.get("reset");
   const isResetPath = /\/reset-password\/?$/i.test(location.pathname);
-
-  // Auth / invite deep-links (legacy reset links → forgot OTP flow)
-  if (resetTok || isResetPath) {
-    openAuth({ forgot: true });
-    return;
-  }
-  if (params.get("login") === "1" || params.get("invite") || state.pendingInvite) {
-    openAuth();
-    return;
-  }
-  if (params.get("register") === "1") {
-    openAuth({ register: true });
-    return;
-  }
-
-  // Resume the app when already in-app (tab/project) or ?app=1 — not on bare `/`
   const wantApp =
     params.get("app") === "1" ||
     params.get("open") === "app" ||
     params.has("tab") ||
     params.has("project");
+
+  // Paint the correct shell immediately (no marketing flash), then load data
+  if (resetTok || isResetPath) {
+    openAuth({ forgot: true });
+  } else if (params.get("login") === "1" || params.get("invite") || state.pendingInvite) {
+    openAuth();
+  } else if (params.get("register") === "1") {
+    openAuth({ register: true });
+  } else if (wantApp && state.access && state.workspaceId) {
+    $("wsName").textContent = state.workspaceName;
+    $("myRoleChip").textContent = roleLabel(state.myRole) || state.myRole || "";
+    show("appView");
+    switchTab(readRoute().tab);
+  } else if (wantApp && state.access) {
+    show("wsView");
+  } else {
+    goMarketing();
+  }
+
+  renderInviteBanner();
+  if (state.pendingInvite) localStorage.setItem("wtm_pending_invite", state.pendingInvite);
+  const healthy = await checkApiHealth();
+  if (!healthy && $("authError")) $("authError").textContent = t("connection_failed");
+
+  if (resetTok || isResetPath || params.get("login") === "1" || params.get("invite") || state.pendingInvite || params.get("register") === "1") {
+    return;
+  }
+
   if (wantApp && state.access) {
     try {
       if (await enterAppFromSession()) return;
@@ -5847,7 +5910,7 @@ applyLang(state.lang);
   }
 
   // Domain homepage `/` → marketing landing
-  goMarketing();
+  if (!wantApp || !state.access) goMarketing();
 })();
 </script>
 </body>
