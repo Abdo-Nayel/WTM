@@ -29,10 +29,38 @@ flutter run -d ios
 
 ## API base URL
 
-Default: `http://127.0.0.1:8000`  
-Change in `lib/core/config/api_config.dart` if needed.
+Default (release): `https://worktaskme.com`
 
-For Android emulator, use `http://10.0.2.2:8000` instead of `127.0.0.1`.
+Override for local/emulator:
+
+```bash
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
+```
+
+## Google Play (Android release)
+
+1. Create upload keystore (once):
+
+```powershell
+cd mobile\android
+.\create_keystore.ps1
+```
+
+2. Build the Play Bundle:
+
+```powershell
+cd mobile
+flutter pub get
+flutter build appbundle --release
+```
+
+Output: `build/app/outputs/bundle/release/app-release.aab`
+
+Application id: `com.lyomastech.worktaskme`
+
+3. In Play Console → Create app → Internal testing / Production → upload the `.aab`.
+
+**Never commit** `android/key.properties` or `android/upload-keystore.jks`.
 
 ## App flow
 

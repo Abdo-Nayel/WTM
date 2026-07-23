@@ -43,5 +43,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Play Store signing secrets (never commit)
+/android/key.properties
+/android/upload-keystore.jks
+*.jks
+*.keystore
+
 # Exceptions to above rules
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

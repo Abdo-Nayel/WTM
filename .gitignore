@@ -43,6 +43,10 @@ mobile/build/
 mobile/**/Pods/
 mobile/android/.gradle/
 mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/upload-keystore.jks
+mobile/**/*.jks
+mobile/**/*.keystore
 mobile/ios/Flutter/Generated.xcconfig
 mobile/ios/Flutter/flutter_export_environment.sh
 

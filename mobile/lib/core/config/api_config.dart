@@ -1,8 +1,12 @@
 class ApiConfig {
   ApiConfig._();
 
-  /// Django backend. On Android emulator use `http://10.0.2.2:8000`.
-  static const String baseUrl = 'http://127.0.0.1:8000';
+  /// Production API. Override locally with:
+  /// `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000`
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://worktaskme.com',
+  );
 
   static const String authRegister = '/api/auth/register/';
   static const String authToken = '/api/auth/token/';
